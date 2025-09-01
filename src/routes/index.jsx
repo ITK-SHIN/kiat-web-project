@@ -7,6 +7,7 @@ import Steps from "../pages/Steps";
 import Register from "../pages/Register";
 import PersonRegister from "../pages/Person-register";
 import PersonChecklist from "../pages/Person-checklist";
+import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "register", element: <Register /> },
       { path: "person-register", element: <PersonRegister /> },
       { path: "person-checklist", element: <PersonChecklist /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
