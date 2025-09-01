@@ -28,15 +28,15 @@ const nav = {
           title: "지정등록하기",
           links: [
             { label: "고시 및 체크리스트", to: "/checklist" },
-            { label: "절차소개", to: "/" },
-            { label: "등록하기", to: "/" },
+            { label: "절차소개", to: "/steps" },
+            { label: "등록하기", to: "/register" },
           ],
         },
         {
           title: "변경하기",
           links: [
             { label: "변경대상 체크", to: "/" },
-            { label: "절차소개", to: "/" },
+            { label: "절차소개", to: "/steps" },
             { label: "변경하기", to: "/" },
           ],
         },
@@ -55,16 +55,16 @@ const nav = {
         {
           title: "지정등록하기",
           links: [
-            { label: "고시 및 체크리스트", to: "/steps" },
-            { label: "절차소개", to: "/" },
-            { label: "등록하기", to: "/" },
+            { label: "고시 및 체크리스트", to: "/checklist" },
+            { label: "절차소개", to: "/steps" },
+            { label: "등록하기", to: "/register" },
           ],
         },
         {
           title: "변경하기",
           links: [
             { label: "변경대상 체크", to: "/" },
-            { label: "절차소개", to: "/" },
+            { label: "절차소개", to: "/steps" },
             { label: "변경하기", to: "/" },
           ],
         },
@@ -87,16 +87,16 @@ const nav = {
         {
           title: "등록하기",
           links: [
-            { label: "고시 및 체크리스트", to: "/steps" },
-            { label: "절차소개", to: "/" },
-            { label: "등록하기", to: "/" },
+            { label: "고시 및 체크리스트", to: "/checklist" },
+            { label: "절차소개", to: "/steps" },
+            { label: "등록하기", to: "/register" },
           ],
         },
         {
           title: "변경하기",
           links: [
             { label: "변경대상 체크", to: "/" },
-            { label: "절차소개", to: "/" },
+            { label: "절차소개", to: "/steps" },
             { label: "변경하기", to: "/" },
           ],
         },
@@ -115,16 +115,15 @@ const nav = {
         {
           title: "등록하기",
           links: [
-            { label: "고시 및 체크리스트", to: "/steps" },
-            { label: "절차소개", to: "/" },
-            { label: "등록하기", to: "/" },
+            { label: "고시 및 체크리스트", to: "/checklist" },
+            { label: "등록하기", to: "/register" },
           ],
         },
         {
           title: "변경하기",
           links: [
             { label: "변경대상 체크", to: "/" },
-            { label: "절차소개", to: "/" },
+            { label: "절차소개", to: "/steps" },
             { label: "변경하기", to: "/" },
           ],
         },
@@ -154,7 +153,7 @@ const nav = {
         {
           title: "심위위원 관리",
           links: [
-            { label: "로그인", to: "/steps" },
+            { label: "로그인", to: "/login" },
             { label: "심위위원확인", to: "/" },
             { label: "심위위원갱신", to: "/" },
           ],
@@ -167,7 +166,7 @@ const nav = {
         {
           title: "기관",
           links: [
-            { label: "로그인", to: "/" },
+            { label: "로그인", to: "/login" },
             { label: "등록진행현황", to: "/" },
             { label: "등록증확인", to: "/" },
             { label: "등록증출력", to: "/" },
@@ -177,7 +176,7 @@ const nav = {
         {
           title: "개인",
           links: [
-            { label: "로그인", to: "/" },
+            { label: "로그인", to: "/login" },
             { label: "등록진행현황", to: "/" },
             { label: "등록증확인", to: "/" },
             { label: "등록증출력", to: "/" },

@@ -66,17 +66,20 @@ export default function Header() {
                             {item.label}
                           </h3>
                           {item.children.map((col, idx) => (
-                            <div key={idx} className="flex flex-col gap-2">
-                              {col.title !== col.links[0].label &&
+                            <div
+                              key={`${item.label}-${idx}`}
+                              className="flex flex-col gap-2"
+                            >
+                              {col.title !== col.links[0]?.label &&
                                 col.title && (
                                   <h4 className="font-semibold text-slate-800 hover:text-blue-600 hover:bg-blue-200 text-base">
                                     {col.title}
                                   </h4>
                                 )}
                               <div className="flex flex-col gap-1">
-                                {col.links.map((l) => (
+                                {col.links.map((l, linkIdx) => (
                                   <Link
-                                    key={l.to}
+                                    key={`${item.label}-${idx}-${linkIdx}-${l.to}`}
                                     to={l.to}
                                     className="hover:bg-slate-100 py-1 text-slate-500 hover:text-blue-500 text-sm"
                                     onClick={() => {
