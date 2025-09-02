@@ -116,7 +116,7 @@ const nav = {
           title: "등록하기",
           links: [
             { label: "고시 및 체크리스트", to: "/person-checklist" },
-            { label: "등록하기", to: "/register" },
+            { label: "등록하기", to: "/person-register" },
           ],
         },
         {
