@@ -6,6 +6,28 @@ export default function Carousel() {
   const currentSlideRef = useRef(1);
   const intervalRef = useRef(null);
 
+  // 네비게이션 관련 함수들
+  const navigateToPage = (path) => {
+    window.location.href = path;
+  };
+
+  const navigateToSlide = (slideNumber) => {
+    const carousel = carouselRef.current;
+    const targetSlide = document.getElementById(`slide${slideNumber}`);
+    if (carousel && targetSlide) {
+      carousel.scrollTo({
+        left: targetSlide.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleSlideNavigation = (e, slideNumber) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigateToSlide(slideNumber);
+  };
+
   useEffect(() => {
     const carousel = carouselRef.current;
     if (!carousel) return;
@@ -103,7 +125,9 @@ export default function Carousel() {
                 <p className="text-xl mb-6 leading-relaxed">
                   체계적인 인재양성 프로그램으로 기업 경쟁력을 강화하세요
                 </p>
-                <button className="btn bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3">
+                <button 
+                className="btn bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3"
+                onClick={() => navigateToPage("/steps")}>
                   자세히 보기
                 </button>
               </div>
@@ -112,35 +136,13 @@ export default function Carousel() {
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between pointer-events-none">
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide4 = document.getElementById("slide4");
-                if (carousel && slide4) {
-                  carousel.scrollTo({
-                    left: slide4.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 4)}
             >
               ❮
             </button>
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide2 = document.getElementById("slide2");
-                if (carousel && slide2) {
-                  carousel.scrollTo({
-                    left: slide2.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 2)}
             >
               ❯
             </button>
@@ -162,9 +164,7 @@ export default function Carousel() {
                 </p>
                 <button
                   className="btn bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-3"
-                  onClick={() => {
-                    window.location.href = "/steps";
-                  }}
+                  
                 >
                   신청하기
                 </button>
@@ -174,35 +174,13 @@ export default function Carousel() {
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between pointer-events-none">
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide1 = document.getElementById("slide1");
-                if (carousel && slide1) {
-                  carousel.scrollTo({
-                    left: slide1.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 1)}
             >
               ❮
             </button>
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide3 = document.getElementById("slide3");
-                if (carousel && slide3) {
-                  carousel.scrollTo({
-                    left: slide3.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 3)}
             >
               ❯
             </button>
@@ -231,35 +209,13 @@ export default function Carousel() {
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between pointer-events-none">
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide2 = document.getElementById("slide2");
-                if (carousel && slide2) {
-                  carousel.scrollTo({
-                    left: slide2.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 2)}
             >
               ❮
             </button>
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide4 = document.getElementById("slide4");
-                if (carousel && slide4) {
-                  carousel.scrollTo({
-                    left: slide4.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 4)}
             >
               ❯
             </button>
@@ -279,10 +235,10 @@ export default function Carousel() {
                 <p className="text-xl mb-6 leading-relaxed">
                   전문 역량을 갖춘 인재양성 전문가가 되어보세요
                 </p>
-                <button className="btn bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8 py-3"
-                onClick={()=>{
-                  window.location.href="/person-checklist"
-                }}>
+                <button 
+                  className="btn bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8 py-3"
+                  onClick={() => navigateToPage("/person-checklist")}
+                >
                   등록절차
                 </button>
               </div>
@@ -291,35 +247,13 @@ export default function Carousel() {
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between pointer-events-none">
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide3 = document.getElementById("slide3");
-                if (carousel && slide3) {
-                  carousel.scrollTo({
-                    left: slide3.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 3)}
             >
               ❮
             </button>
             <button
               className="btn btn-circle btn-sm bg-white/20 border-white/30 text-white hover:bg-white/30 pointer-events-auto"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const carousel = carouselRef.current;
-                const slide1 = document.getElementById("slide1");
-                if (carousel && slide1) {
-                  carousel.scrollTo({
-                    left: slide1.offsetLeft,
-                    behavior: "smooth",
-                  });
-                }
-              }}
+              onClick={(e) => handleSlideNavigation(e, 1)}
             >
               ❯
             </button>
@@ -332,66 +266,22 @@ export default function Carousel() {
         <button
           className="w-4 h-4 rounded-full bg-white border-2 border-black/30 shadow-lg opacity-100 transition-all duration-300 hover:scale-110 relative z-[10000]"
           id="dot1"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const carousel = carouselRef.current;
-            const slide1 = document.getElementById("slide1");
-            if (carousel && slide1) {
-              carousel.scrollTo({
-                left: slide1.offsetLeft,
-                behavior: "smooth",
-              });
-            }
-          }}
+          onClick={(e) => handleSlideNavigation(e, 1)}
         ></button>
         <button
           className="w-4 h-4 rounded-full bg-white/70 border-2 border-black/30 shadow-lg opacity-100 transition-all duration-300 hover:scale-110 relative z-[10000]"
           id="dot2"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const carousel = carouselRef.current;
-            const slide2 = document.getElementById("slide2");
-            if (carousel && slide2) {
-              carousel.scrollTo({
-                left: slide2.offsetLeft,
-                behavior: "smooth",
-              });
-            }
-          }}
+          onClick={(e) => handleSlideNavigation(e, 2)}
         ></button>
         <button
           className="w-4 h-4 rounded-full bg-white/70 border-2 border-black/30 shadow-lg opacity-100 transition-all duration-300 hover:scale-110 relative z-[10000]"
           id="dot3"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const carousel = carouselRef.current;
-            const slide3 = document.getElementById("slide3");
-            if (carousel && slide3) {
-              carousel.scrollTo({
-                left: slide3.offsetLeft,
-                behavior: "smooth",
-              });
-            }
-          }}
+          onClick={(e) => handleSlideNavigation(e, 3)}
         ></button>
         <button
           className="w-4 h-4 rounded-full bg-white/70 border-2 border-black/30 shadow-lg opacity-100 transition-all duration-300 hover:scale-110 relative z-[10000]"
           id="dot4"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const carousel = carouselRef.current;
-            const slide4 = document.getElementById("slide4");
-            if (carousel && slide4) {
-              carousel.scrollTo({
-                left: slide4.offsetLeft,
-                behavior: "smooth",
-              });
-            }
-          }}
+          onClick={(e) => handleSlideNavigation(e, 4)}
         ></button>
       </div>
     </>
