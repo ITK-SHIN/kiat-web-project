@@ -28,7 +28,7 @@ const nav = {
           title: "지정등록하기",
           links: [
             { label: "고시 및 체크리스트", to: "/checklist" },
-            { label: "절차소개", to: "/steps" },
+            { label: "절차소개", to: "/login" },
             { label: "등록하기", to: "/register" },
           ],
         },
