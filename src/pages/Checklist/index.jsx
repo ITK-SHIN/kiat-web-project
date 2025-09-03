@@ -173,7 +173,7 @@ export default function Checklist() {
 
   const handleNext = () => {
     if (allConfirmed) {
-      navigate("/steps");
+      navigate("/register");
     } else {
       alert("모든 항목을 확인으로 체크해 주세요.");
     }
@@ -527,25 +527,21 @@ export default function Checklist() {
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            {allConfirmed ? (
-              <>
-                확인 후 다음 단계로
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </>
-            ) : (
-              "모든 항목을 확인해주세요"
+            확인 후 다음 단계로
+            {allConfirmed && (
+              <svg
+                className="w-5 h-5 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
             )}
           </button>
         </div>

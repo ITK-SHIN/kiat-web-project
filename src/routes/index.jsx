@@ -8,6 +8,8 @@ import Register from "../pages/Register";
 import PersonRegister from "../pages/Person-register";
 import PersonChecklist from "../pages/Person-checklist";
 import NotFound from "../pages/NotFound";
+import PersonLogin from "../pages/Person-login";
+import PersonSteps from "../pages/Person-steps";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: "register", element: <Register /> },
       { path: "person-register", element: <PersonRegister /> },
       { path: "person-checklist", element: <PersonChecklist /> },
+      { path: "person-login", element: <PersonLogin /> },
+      { path: "person-steps", element: <PersonSteps /> },
       { path: "*", element: <NotFound /> },
     ],
   },
