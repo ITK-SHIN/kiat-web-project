@@ -160,7 +160,12 @@ export default function Carousel() {
                 <p className="text-xl mb-6 leading-relaxed">
                   미래 기술 인재 양성을 위한 전문 교육기관 등록
                 </p>
-                <button className="btn bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-3">
+                <button
+                  className="btn bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-3"
+                  onClick={() => {
+                    window.location.href = "/steps";
+                  }}
+                >
                   신청하기
                 </button>
               </div>
@@ -274,7 +279,10 @@ export default function Carousel() {
                 <p className="text-xl mb-6 leading-relaxed">
                   전문 역량을 갖춘 인재양성 전문가가 되어보세요
                 </p>
-                <button className="btn bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8 py-3">
+                <button className="btn bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8 py-3"
+                onClick={()=>{
+                  window.location.href="/person-checklist"
+                }}>
                   등록절차
                 </button>
               </div>
