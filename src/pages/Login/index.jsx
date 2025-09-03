@@ -41,14 +41,14 @@ export default function Login() {
           <nav className="flex items-center space-x-2 text-sm text-gray-600">
             <Link to="/" className="hover:text-blue-600">🏠</Link>
             <span>&gt;</span>
-            <span className="text-gray-900 font-medium">로그인</span>
+            <span className="text-gray-900 font-medium">기업 로그인</span>
           </nav>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">로그인</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">기업 로그인</h1>
           
           {/* 다운로드 버튼들 */}
           <div className="flex flex-wrap gap-3 mb-8 justify-between items-center">
@@ -110,7 +110,7 @@ export default function Login() {
               />
               <div className="flex gap-2">
                 <button className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
-                  인증서 인내/선택
+                  인증서 안내/신청
                 </button>
                 <button 
                   className={`px-6 py-3 rounded-md font-medium transition-colors ${
@@ -119,7 +119,7 @@ export default function Login() {
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                   onClick={handleCertLogin}
-                  disabled={isCertLoginEnabled}
+                  disabled={!isCertLoginEnabled}
                 >
                   로그인
                 </button>
@@ -128,17 +128,17 @@ export default function Login() {
 
             <hr className="border-t border-gray-200 my-6 mt-13" />
             <div className="mt-6 text-sm text-gray-600 space-y-2 text-left">
-              <p>- 로그인이 안되시 <Link to="#" className="text-blue-600 hover:underline">로그인 오류 해결방법</Link>을 클릭하세요</p>
-              <p>- 최초 신규자는 공동인증서(기업)만 가능합니다.</p>
-              <p>- 기업인명부(KOITA수목적용)공동인증서(기업)만 사용 가능합니다.</p>
-              <p>- 신규허가시 등록에서 사용가능한 인증서만 보입니다.</p>
+              <p>- 로그인이 안될 시 <Link to="#" className="text-blue-600 hover:underline"> 로그인 오류 해결방안</Link>을 클릭하세요</p>
+              <p>- 최초 신규신고는 공동인증서(기업)로만 가능합니다.</p>
+              <p>- 기업용(범용,KOITA특수목적용)공동인증서(기업)만 사용 가능합니다.</p>
+              <p>- 현 시스템에서 사용가능한 인증서만 보입니다.</p>
             </div>
 
             <div className="mt-18 p-4 bg-blue-50 rounded-md min-h-[140px] flex flex-col">
               <div className="flex items-start gap-2 flex-1">
                 <span className="text-blue-600 mt-1 flex-shrink-0">✓</span>
                 <div className="text-sm text-blue-800 flex-1">
-                  <strong className="block mb-2">공동인증서(기업) 로그인</strong>
+                  <strong className="block mb-2 text-left">공동인증서(기업) 로그인</strong>
                   <p className="leading-relaxed text-left">
                   신규설립신고 및 보완 | 변경신고 및 보완 | 신고내역 보기 |양수 신청 | 
                   </p>
@@ -161,7 +161,7 @@ export default function Login() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">인정번호 로그인</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2 ">인정번호 로그인</h2>
             </div>
 
             <div className="flex gap-2">
@@ -203,16 +203,16 @@ export default function Login() {
 
             <hr className="border-t border-gray-200 my-6" />
             <div className="text-sm text-gray-600 space-y-2 text-left">
-              <p>- 연구수 비밀번호를 등록하여 공동인증서(기업) 없이 서비스를 이용할 수 있습니다.</p>
-              <p>- 담당자 변경 (휴사, 인사이동시) 정보보호를 위해 반드시 비밀번호를 변경해 주십시오.</p>
-              <p>- 인정번호로 로그인시 신규신고, 지정취소 등 기능이 일부 제한됩니다.</p>
+              <p>- 연구소 비밀번호를 등록하면 공동인증서(기업) 없이 서비스를 이용할 수 있습니다.</p>
+              <p>- 담당자 변경 (퇴사, 인사이동)시 정보보호를 위해 반드시 비밀번호를 변경해주십시오.</p>
+              <p>- 인정번호로 로그인시 신규신고, 자진취소 등 기능이 일부 제한됩니다.</p>
             </div>
 
             <div className="mt-24 p-4 bg-red-50 rounded-md min-h-[140px] flex flex-col">
               <div className="flex items-start gap-2 flex-1">
                 <span className="text-red-600 mt-1 flex-shrink-0">✓</span>
                 <div className="text-sm text-red-800 flex-1">
-                  <strong className="block mb-2">임직번호 로그인</strong>
+                  <strong className="block mb-2 text-left">임직번호 로그인</strong>
                   <p className="leading-relaxed mb-2 text-left">
                     변경신고 및 보완 | 신고내역 보기 | 보고 연수 조회 및 인쇄서 출력 |
                   </p>
