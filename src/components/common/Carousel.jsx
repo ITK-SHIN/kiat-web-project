@@ -1,14 +1,16 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Carousel() {
   const carouselRef = useRef(null);
   const totalSlides = 4;
   const currentSlideRef = useRef(1);
   const intervalRef = useRef(null);
+  const navigate = useNavigate();
 
   // 네비게이션 관련 함수들
   const navigateToPage = (path) => {
-    window.location.href = path;
+    navigate(path);
   };
 
   const navigateToSlide = (slideNumber) => {
@@ -164,7 +166,6 @@ export default function Carousel() {
                 </p>
                 <button
                   className="btn bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-3"
-                  
                 >
                   신청하기
                 </button>
