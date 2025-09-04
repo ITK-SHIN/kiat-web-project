@@ -14,12 +14,12 @@ export default function Carousel() {
   };
 
   const navigateToSlide = (slideNumber) => {
-    const carousel = carouselRef.current;
-    const targetSlide = document.getElementById(`slide${slideNumber}`);
-    if (carousel && targetSlide) {
-      carousel.scrollTo({
-        left: targetSlide.offsetLeft,
-        behavior: "smooth",
+    const carousel = carouselRef.current; // 캐러셀 요소
+    const targetSlide = document.getElementById(`slide${slideNumber}`); // 이동할 슬라이드 요소
+    if (carousel && targetSlide) { // 캐러셀 요소와 이동할 슬라이드 요소가 있을 때
+      carousel.scrollTo({ // 슬라이드 이동
+        left: targetSlide.offsetLeft, // 슬라이드 이동 위치
+        behavior: "smooth", // 부드러운 스크롤 효과
       });
     }
   };
@@ -129,7 +129,7 @@ export default function Carousel() {
                 </p>
                 <button 
                 className="btn bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3"
-                onClick={() => navigateToPage("/steps")}>
+                onClick={() => navigateToPage("/login")}>
                   자세히 보기
                 </button>
               </div>
@@ -238,7 +238,7 @@ export default function Carousel() {
                 </p>
                 <button 
                   className="btn bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8 py-3"
-                  onClick={() => navigateToPage("/person-checklist")}
+                  onClick={() => navigateToPage("/person-login")}
                 >
                   등록절차
                 </button>

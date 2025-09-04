@@ -10,6 +10,8 @@ import PersonChecklist from "../pages/Person-checklist";
 import NotFound from "../pages/NotFound";
 import PersonLogin from "../pages/Person-login";
 import PersonSteps from "../pages/Person-steps";
+import IntroductionOverview from "../pages/Introduction-overview";
+import IntroductionRelevantLaw from "../pages/Introduction-relevant-law";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,8 @@ const router = createBrowserRouter([
       { path: "person-checklist", element: <PersonChecklist /> },
       { path: "person-login", element: <PersonLogin /> },
       { path: "person-steps", element: <PersonSteps /> },
+      { path: "introduction-overview", element: <IntroductionOverview /> },
+      { path: "introduction-relevant-law", element: <IntroductionRelevantLaw /> },
       { path: "*", element: <NotFound /> },
     ],
   },

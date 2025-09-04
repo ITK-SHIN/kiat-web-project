@@ -5,11 +5,11 @@ const nav = {
       children: [
         {
           title: "개요",
-          links: [{ label: "개요", to: "/" }],
+          links: [{ label: "개요", to: "/introduction-overview" }],
         },
         {
           title: "관련법",
-          links: [{ label: "관련법", to: "/" }],
+          links: [{ label: "관련법", to: "/introduction-relevant-law" }],
         },
         {
           title: "산업통산자원부고시",

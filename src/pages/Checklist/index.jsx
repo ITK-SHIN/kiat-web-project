@@ -469,11 +469,11 @@ export default function Checklist() {
         </div>
 
         {/* Final Message & Action */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
           <div className="mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-blue-600"
+                className="w-8 h-8 text-purple-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -487,10 +487,10 @@ export default function Checklist() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              체크리스트 완료
+              자격 확인 완료
             </h3>
             <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-              사내대학원 설치인가 신청을 위한 체크를 하시느라 수고 많으셨습니다.
+            사내대학원 설치인가 신청을 위한 체크를 하시느라 수고 많으셨습니다.
               귀사가 체크항목 중 4가지 모두에 해당되면 사내대학원 설치인가
               신청이 가능하십니다.
             </p>
@@ -511,13 +511,13 @@ export default function Checklist() {
                   />
                 </svg>
                 <span className="text-amber-800 font-medium">
-                  모든 항목을 '확인'으로 체크해야 다음 단계로 이동할 수
-                  있습니다.
+                  모든 항목을 '해당함'으로 체크해야 등록 신청이 가능합니다.
                 </span>
               </div>
             </div>
           )}
 
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
             onClick={handleNext}
             disabled={!allConfirmed}
@@ -527,23 +527,30 @@ export default function Checklist() {
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
           >
-            확인 후 다음 단계로
-            {allConfirmed && (
-              <svg
-                className="w-5 h-5 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            )}
+            {allConfirmed ? (
+                <>
+                  자격 확인 후 등록 신청
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </>
+              ) : (
+                "모든 항목을 확인해주세요"
+              )}
           </button>
+
+
+          </div>
         </div>
       </div>
     </div>

@@ -60,7 +60,7 @@ export default function PersonLogin() {
             <div className="bg-blue-50 p-4 rounded-md mb-6">
               <div className="text-sm text-blue-800 space-y-2 text-left mt-8 mb-16">
                 <p>- <span className="text-red-600">본인 명의로 가입한 휴대전화번호로만 인증 가능</span>하며, <span className="text-red-600">본인명의의 휴대전화번호가 아닌경우 인증이 어려우니</span> 이점 참고해 주시기 바랍니다.</p>
-                <p>- 해당 사이트(조달청 평가위원시스템)의 본인인증은 한국신용평가정보(주)의 본인인증 서비스를 통해 이루어집니다. 본인인증에 대한 문의가 있으신 분은 한국신용평가정보(주)의 본인인증 콜센터에 문의 주시기 바랍니다.</p>
+                <p>- 해당 사이트(KIST)의 본인인증은 한국신용평가정보(주)의 본인인증 서비스를 통해 이루어집니다. 본인인증에 대한 문의가 있으신 분은 한국신용평가정보(주)의 본인인증 콜센터에 문의 주시기 바랍니다.</p>
                 <p>- 휴대전화 본인인증 후 화면전화이 <span className="font-medium">안되는 경우</span></p>
                 <p className="ml-2">익스플로러(IE) -&gt; 인터넷옵션 -&gt; 보안 -&gt; 신뢰할 수 있는 사이트 -&gt; 사이트*.checkplus.co.kr 추가</p>
                 <p className="text-xs mt-2">(이 영역에 있는 모든 사이트에 대해 서버 검증(https:) 필요(S) 해제)</p>
