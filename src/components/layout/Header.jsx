@@ -14,7 +14,10 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-4 h-8">
           <Link to="/login" className="hover:underline">
-            로그인
+            기업 로그인
+          </Link>
+          <Link to="/person-login" className="hover:underline">
+            개인 로그인
           </Link>
           <Link to="/" className="hover:underline">
             회원사 신청
