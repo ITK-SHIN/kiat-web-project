@@ -112,7 +112,7 @@ export default function IntroductionOverview() {
               <div className="mb-8">
                 <SectionHeader title="제도 목적" />
                 <div className="ml-6">
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-left">
                     기업 주도 인재양성 체계 마련을 위해 제정된 「첨단산업 인재혁신 특별법」에 따른 각종 지원 제도 운영
                   </p>
                 </div>
@@ -122,7 +122,7 @@ export default function IntroductionOverview() {
               <div className="mb-8">
                 <SectionHeader title="법적근거" />
                 <div className="ml-6">
-                  <p className="text-gray-700 leading-relaxed mb-3">
+                  <p className="text-gray-700 leading-relaxed mb-3 text-left">
                     정부 국정과제의 일환으로 기업 주도 인재양성 체계 마련을 위해 「첨단산업 인재혁신 특별법」 제정 및
                     시행(’25.1월)
                   </p>
@@ -441,7 +441,6 @@ export default function IntroductionOverview() {
 
               {/* 제도 운영 및 세부 추진 내용 */}
               <div className="mb-8">
-                <SectionHeader title="제도 운영 및 세부 추진 내용" />
                 <div className="ml-6">
                   <ul className="space-y-2">
                     <li className="flex items-start">
