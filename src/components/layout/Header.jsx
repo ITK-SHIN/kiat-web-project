@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import nav from "../../constants/nav";
-import logo from "../../assets/images/logo.png";
+import { Link } from 'react-router-dom';
+import logo from '../../assets/images/logo.png';
+import nav from '../../constants/nav';
 
 export default function Header() {
   return (
@@ -35,18 +35,14 @@ export default function Header() {
       </div>
 
       {/* 네비게이션 + 메가메뉴 */}
-      <nav
-        className="bg-slate-50 border-b border-slate-200"
-        role="navigation"
-        aria-label="주 메뉴"
-      >
+      <nav className="bg-slate-50 border-b border-slate-200" role="navigation" aria-label="주 메뉴">
         <div className="container-max">
           <div className="dropdown dropdown-hover w-full group">
             <ul className="menu menu-horizontal bg-slate-50 w-full flex justify-between">
-              {nav.top.map((item) => (
+              {nav.top.map(item => (
                 <li key={item.label} className="text-center">
                   <Link
-                    to={item.to ?? "#"}
+                    to={item.to ?? '#'}
                     className="hover:bg-slate-100 whitespace-nowrap font-medium hover:text-blue-600"
                   >
                     {item.label}
@@ -59,26 +55,17 @@ export default function Header() {
               <div className="container-max p-4">
                 <div className="flex justify-between gap-4">
                   {nav.top.map(
-                    (item) =>
+                    item =>
                       item.children?.length && (
-                        <div
-                          key={item.label}
-                          className="flex flex-col gap-4 hover:bg-blue-100"
-                        >
-                          <h3 className="font-bold text-lg text-blue-600">
-                            {item.label}
-                          </h3>
+                        <div key={item.label} className="flex flex-col gap-4 hover:bg-blue-100">
+                          <h3 className="font-bold text-lg text-blue-600">{item.label}</h3>
                           {item.children.map((col, idx) => (
-                            <div
-                              key={`${item.label}-${idx}`}
-                              className="flex flex-col gap-2"
-                            >
-                              {col.title !== col.links[0]?.label &&
-                                col.title && (
-                                  <h4 className="font-semibold text-slate-800 hover:text-blue-600 hover:bg-blue-200 text-base">
-                                    {col.title}
-                                  </h4>
-                                )}
+                            <div key={`${item.label}-${idx}`} className="flex flex-col gap-2">
+                              {col.title !== col.links[0]?.label && col.title && (
+                                <h4 className="font-semibold text-slate-800 hover:text-blue-600 hover:bg-blue-200 text-base">
+                                  {col.title}
+                                </h4>
+                              )}
                               <div className="flex flex-col gap-1">
                                 {col.links.map((l, linkIdx) => (
                                   <Link
@@ -87,21 +74,16 @@ export default function Header() {
                                     className="hover:bg-slate-100 py-1 text-slate-500 hover:text-blue-500 text-sm"
                                     onClick={() => {
                                       // 링크 클릭 시 메가메뉴를 즉시 숨김
-                                      const dropdown =
-                                        document.querySelector(".dropdown");
+                                      const dropdown = document.querySelector('.dropdown');
                                       if (dropdown) {
-                                        dropdown.classList.remove("group");
-                                        dropdown.classList.add("group");
+                                        dropdown.classList.remove('group');
+                                        dropdown.classList.add('group');
                                         // 강제로 hover 상태 해제하여 메뉴 닫기
-                                        const dropdownContent =
-                                          dropdown.querySelector(
-                                            ".dropdown-content"
-                                          );
+                                        const dropdownContent = dropdown.querySelector('.dropdown-content');
                                         if (dropdownContent) {
-                                          dropdownContent.style.display =
-                                            "none";
+                                          dropdownContent.style.display = 'none';
                                           setTimeout(() => {
-                                            dropdownContent.style.display = "";
+                                            dropdownContent.style.display = '';
                                           }, 50);
                                         }
                                       }

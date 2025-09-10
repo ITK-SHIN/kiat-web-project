@@ -1,77 +1,70 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const stepsData = [
   {
     id: 1,
-    step: "1단계",
-    title: "온라인 신청서 작성",
-    actor: "기업",
-    actorColor: "bg-blue-500",
-    description:
-      "사내대학원 설치인가를 위한 온라인 신청서를 작성하고 필요 서류를 준비합니다.",
-    details: [
-      "온라인 신청시스템 접속",
-      "기본정보 및 설치계획서 작성",
-      "필수 첨부서류 업로드",
-      "신청서 최종 제출",
-    ],
-    icon: "📝",
-    estimatedTime: "1-2주",
+    step: '1단계',
+    title: '온라인 신청서 작성',
+    actor: '기업',
+    actorColor: 'bg-blue-500',
+    description: '기업인재개발기관 지정 신청을 위한 온라인 신청서를 작성하고 필요 서류를 준비합니다.',
+    details: ['온라인 신청시스템 접속', '기본정보 및 설치계획서 작성', '필수 첨부서류 업로드', '신청서 최종 제출'],
+    icon: '📝',
+    estimatedTime: '1-2주',
   },
   {
     id: 2,
-    step: "2단계",
-    title: "서류 검토 및 보완요청",
-    actor: "KIAT",
-    actorColor: "bg-green-500",
-    description:
-      "한국산업기술진흥원에서 제출된 서류를 검토하고 필요시 보완을 요청합니다.",
-    details: [
-      "제출서류 접수 확인",
-      "서류 완비성 검토",
-      "보완사항 통지",
-      "보완서류 재검토",
-    ],
-    icon: "🔍",
-    estimatedTime: "2-3주",
+    step: '2단계',
+    title: '서류 검토 및 보완요청',
+    actor: 'KIAT',
+    actorColor: 'bg-green-500',
+    description: '한국산업기술진흥원에서 제출된 서류를 검토하고 필요시 보완을 요청합니다.',
+    details: ['제출서류 접수 확인', '서류 완비성 검토', '보완사항 통지', '보완서류 재검토'],
+    icon: '🔍',
+    estimatedTime: '2-3주',
   },
   {
     id: 3,
-    step: "3단계",
-    title: "심의·의결",
-    actor: "심사위원회",
-    actorColor: "bg-purple-500",
-    description:
-      "전문가로 구성된 심사위원회에서 설치 요건 충족 여부를 심의하고 의결합니다.",
-    details: [
-      "심사위원회 구성",
-      "서류심사 및 현장실사",
-      "종합심의 및 의결",
-      "심사결과 확정",
-    ],
-    icon: "👥",
-    estimatedTime: "3-4주",
+    step: '3단계',
+    title: '심의·의결',
+    actor: '심사위원회',
+    actorColor: 'bg-purple-500',
+    description: '전문가로 구성된 심사위원회에서 설치 요건 충족 여부를 심의하고 의결합니다.',
+    details: ['심사위원회 구성', '서류심사 및 현장실사', '종합심의 및 의결', '심사결과 확정'],
+    icon: '👥',
+    estimatedTime: '3-4주',
   },
   {
     id: 4,
-    step: "4단계",
-    title: "결과통지 및 지정서 발급",
-    actor: "결과통지",
-    actorColor: "bg-orange-500",
-    description: "심사 결과에 따라 지정서를 발급하거나 반려 사유를 통지합니다.",
-    details: [
-      "심사결과 통지서 발송",
-      "지정서 발급 (승인시)",
-      "반려사유 안내 (반려시)",
-      "이의신청 안내",
-    ],
-    icon: "📋",
-    estimatedTime: "1주",
+    step: '4단계',
+    title: '결과통지 및 지정서 발급',
+    actor: '결과통지',
+    actorColor: 'bg-orange-500',
+    description: '심사 결과에 따라 지정서를 발급하거나 반려 사유를 통지합니다.',
+    details: ['심사결과 통지서 발송', '지정서 발급 (승인시)', '반려사유 안내 (반려시)', '이의신청 안내'],
+    icon: '📋',
+    estimatedTime: '1주',
   },
 ];
 
 export default function Steps() {
-  const totalEstimatedTime = "7-10주";
+  const navigate = useNavigate();
+  const totalEstimatedTime = '7-10주';
+
+  const handleChecklistClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/checklist');
+  };
+
+  const handleRegisterClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/register');
+  };
+
+  const handleHomeClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
@@ -79,11 +72,7 @@ export default function Steps() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
+            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1V8z"
@@ -92,24 +81,16 @@ export default function Steps() {
             </svg>
             처리절차 안내
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            신규처리절차
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">신규처리절차</h1>
           <div className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
             기업인재개발기관
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
-            사내대학원 설치인가 신청부터 지정서 발급까지의 전체 과정을
-            안내합니다.
+            기업인재개발기관 지정 신청부터 지정서 발급까지의 전체 과정을 안내합니다.
           </p>
           <div className="bg-white rounded-2xl p-4 shadow-lg inline-block">
             <div className="flex items-center space-x-2">
-              <svg
-                className="w-5 h-5 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -118,9 +99,7 @@ export default function Steps() {
                 />
               </svg>
               <span className="text-sm text-gray-600">예상 소요시간:</span>
-              <span className="font-semibold text-blue-600">
-                {totalEstimatedTime}
-              </span>
+              <span className="font-semibold text-blue-600">{totalEstimatedTime}</span>
             </div>
           </div>
         </div>
@@ -137,9 +116,7 @@ export default function Steps() {
                     >
                       {step.id}
                     </div>
-                    <span className="text-xs text-gray-600 mt-2 text-center max-w-16">
-                      {step.estimatedTime}
-                    </span>
+                    <span className="text-xs text-gray-600 mt-2 text-center max-w-16">{step.estimatedTime}</span>
                   </div>
                   {index < stepsData.length - 1 && (
                     <div className="hidden sm:block w-16 h-1 bg-gradient-to-r from-gray-300 to-gray-400 mx-2"></div>
@@ -163,27 +140,16 @@ export default function Steps() {
                     <div className="text-4xl">{step.icon}</div>
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
-                        <span className="text-sm font-medium text-gray-500">
-                          {step.step}
-                        </span>
-                        <div
-                          className={`px-3 py-1 rounded-full text-white text-sm font-medium ${step.actorColor}`}
-                        >
+                        <span className="text-sm font-medium text-gray-500">{step.step}</span>
+                        <div className={`px-3 py-1 rounded-full text-white text-sm font-medium ${step.actorColor}`}>
                           {step.actor}
                         </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900">
-                        {step.title}
-                      </h3>
+                      <h3 className="text-2xl font-bold text-gray-900">{step.title}</h3>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -195,18 +161,11 @@ export default function Steps() {
                   </div>
                 </div>
 
-                <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                  {step.description}
-                </p>
+                <p className="text-gray-700 text-lg mb-6 leading-relaxed">{step.description}</p>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg
-                      className="w-5 h-5 mr-2 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -218,10 +177,7 @@ export default function Steps() {
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {step.details.map((detail, detailIndex) => (
-                      <div
-                        key={detailIndex}
-                        className="flex items-start space-x-2"
-                      >
+                      <div key={detailIndex} className="flex items-start space-x-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
                         <span className="text-gray-700 text-sm">{detail}</span>
                       </div>
@@ -244,40 +200,23 @@ export default function Steps() {
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
           <div className="mb-6">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              신청을 시작하시겠습니까?
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">신청을 시작하시겠습니까?</h3>
             <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-              체크리스트를 통해 요건을 확인하신 후, 온라인 신청을 진행하실 수
-              있습니다. 궁금한 사항이 있으시면 언제든지 문의해 주세요.
+              체크리스트를 통해 요건을 확인하신 후, 온라인 신청을 진행하실 수 있습니다. 궁금한 사항이 있으시면 언제든지
+              문의해 주세요.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link
-              to="/register"
+            <button
+              onClick={handleRegisterClick}
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -286,17 +225,12 @@ export default function Steps() {
                 />
               </svg>
               등록하기
-            </Link>
-            <Link
-              to="/checklist"
+            </button>
+            <button
+              onClick={handleChecklistClick}
               className="inline-flex items-center px-8 py-4 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:border-gray-400 transition-all duration-200 hover:shadow-lg"
             >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -305,17 +239,12 @@ export default function Steps() {
                 />
               </svg>
               체크리스트 확인
-            </Link>
-            <Link
-              to="/"
+            </button>
+            <button
+              onClick={handleHomeClick}
               className="inline-flex items-center px-6 py-3 text-gray-600 font-medium hover:text-blue-600 transition-colors duration-200"
             >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -324,28 +253,18 @@ export default function Steps() {
                 />
               </svg>
               홈으로
-            </Link>
+            </button>
           </div>
         </div>
 
         {/* Help Section */}
         <div className="mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
           <div className="text-center">
-            <h4 className="text-xl font-bold text-gray-900 mb-4">
-              도움이 필요하시나요?
-            </h4>
-            <p className="text-gray-600 mb-6">
-              신청 과정에서 궁금한 사항이나 도움이 필요하시면 언제든지
-              연락주세요.
-            </p>
+            <h4 className="text-xl font-bold text-gray-900 mb-4">도움이 필요하시나요?</h4>
+            <p className="text-gray-600 mb-6">신청 과정에서 궁금한 사항이나 도움이 필요하시면 언제든지 연락주세요.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <div className="flex items-center space-x-2 text-blue-700">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -356,12 +275,7 @@ export default function Steps() {
                 <span className="font-medium">1379 → 3번</span>
               </div>
               <div className="flex items-center space-x-2 text-blue-700">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

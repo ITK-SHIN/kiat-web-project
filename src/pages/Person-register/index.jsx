@@ -1,30 +1,30 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const formSections = [
   {
-    id: "personal",
-    title: "개인 정보",
-    icon: "👤",
-    description: "개인 기본 정보를 입력해주세요",
+    id: 'personal',
+    title: '개인 정보',
+    icon: '👤',
+    description: '개인 기본 정보를 입력해주세요',
   },
   {
-    id: "education",
-    title: "학력 정보",
-    icon: "🎓",
-    description: "최종 학력 및 교육 이력을 입력해주세요",
+    id: 'education',
+    title: '학력 정보',
+    icon: '🎓',
+    description: '최종 학력 및 교육 이력을 입력해주세요',
   },
   {
-    id: "career",
-    title: "경력 정보",
-    icon: "💼",
-    description: "전문 분야 경력 사항을 입력해주세요",
+    id: 'career',
+    title: '경력 정보',
+    icon: '💼',
+    description: '전문 분야 경력 사항을 입력해주세요',
   },
   {
-    id: "expertise",
-    title: "전문 분야",
-    icon: "🔬",
-    description: "전문성 및 강의 가능 분야를 입력해주세요",
+    id: 'expertise',
+    title: '전문 분야',
+    icon: '🔬',
+    description: '전문성 및 강의 가능 분야를 입력해주세요',
   },
 ];
 
@@ -33,93 +33,83 @@ export default function PersonRegister() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     // Personal Info
-    name: "",
-    birthDate: "",
-    gender: "",
-    nationality: "",
-    address: "",
-    phone: "",
-    email: "",
+    name: '',
+    birthDate: '',
+    gender: '',
+    nationality: '',
+    address: '',
+    phone: '',
+    email: '',
 
     // Education Info
-    finalEducation: "",
-    university: "",
-    major: "",
-    graduationYear: "",
-    degree: "",
-    additionalEducation: "",
+    finalEducation: '',
+    university: '',
+    major: '',
+    graduationYear: '',
+    degree: '',
+    additionalEducation: '',
 
     // Career Info
-    currentCompany: "",
-    currentPosition: "",
-    workExperience: "",
-    industryExperience: "",
-    teachingExperience: "",
+    currentCompany: '',
+    currentPosition: '',
+    workExperience: '',
+    industryExperience: '',
+    teachingExperience: '',
 
     // Expertise Info
-    expertiseField: "",
-    certifications: "",
-    publications: "",
-    researchAreas: "",
-    teachableSubjects: "",
-    portfolioUrl: "",
+    expertiseField: '',
+    certifications: '',
+    publications: '',
+    researchAreas: '',
+    teachableSubjects: '',
+    portfolioUrl: '',
   });
 
   const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({
+      setErrors(prev => ({
         ...prev,
-        [name]: "",
+        [name]: '',
       }));
     }
   };
 
-  const validateStep = (step) => {
+  const validateStep = step => {
     const newErrors = {};
 
     switch (step) {
       case 0: // Personal Info
-        if (!formData.name.trim()) newErrors.name = "이름을 입력해주세요";
-        if (!formData.birthDate.trim())
-          newErrors.birthDate = "생년월일을 입력해주세요";
-        if (!formData.gender.trim()) newErrors.gender = "성별을 선택해주세요";
-        if (!formData.address.trim()) newErrors.address = "주소를 입력해주세요";
-        if (!formData.phone.trim()) newErrors.phone = "연락처를 입력해주세요";
-        if (!formData.email.trim()) newErrors.email = "이메일을 입력해주세요";
+        if (!formData.name.trim()) newErrors.name = '이름을 입력해주세요';
+        if (!formData.birthDate.trim()) newErrors.birthDate = '생년월일을 입력해주세요';
+        if (!formData.gender.trim()) newErrors.gender = '성별을 선택해주세요';
+        if (!formData.address.trim()) newErrors.address = '주소를 입력해주세요';
+        if (!formData.phone.trim()) newErrors.phone = '연락처를 입력해주세요';
+        if (!formData.email.trim()) newErrors.email = '이메일을 입력해주세요';
         break;
       case 1: // Education Info
-        if (!formData.finalEducation.trim())
-          newErrors.finalEducation = "최종학력을 선택해주세요";
-        if (!formData.university.trim())
-          newErrors.university = "대학교명을 입력해주세요";
-        if (!formData.major.trim()) newErrors.major = "전공을 입력해주세요";
-        if (!formData.graduationYear.trim())
-          newErrors.graduationYear = "졸업년도를 입력해주세요";
+        if (!formData.finalEducation.trim()) newErrors.finalEducation = '최종학력을 선택해주세요';
+        if (!formData.university.trim()) newErrors.university = '대학교명을 입력해주세요';
+        if (!formData.major.trim()) newErrors.major = '전공을 입력해주세요';
+        if (!formData.graduationYear.trim()) newErrors.graduationYear = '졸업년도를 입력해주세요';
         break;
       case 2: // Career Info
-        if (!formData.currentCompany.trim())
-          newErrors.currentCompany = "현재 소속을 입력해주세요";
-        if (!formData.currentPosition.trim())
-          newErrors.currentPosition = "현재 직책을 입력해주세요";
-        if (!formData.workExperience.trim())
-          newErrors.workExperience = "총 경력을 선택해주세요";
-        if (!formData.industryExperience.trim())
-          newErrors.industryExperience = "산업 분야 경력을 입력해주세요";
+        if (!formData.currentCompany.trim()) newErrors.currentCompany = '현재 소속을 입력해주세요';
+        if (!formData.currentPosition.trim()) newErrors.currentPosition = '현재 직책을 입력해주세요';
+        if (!formData.workExperience.trim()) newErrors.workExperience = '총 경력을 선택해주세요';
+        if (!formData.industryExperience.trim()) newErrors.industryExperience = '산업 분야 경력을 입력해주세요';
         break;
       case 3: // Expertise Info
-        if (!formData.expertiseField.trim())
-          newErrors.expertiseField = "전문 분야를 선택해주세요";
-        if (!formData.teachableSubjects.trim())
-          newErrors.teachableSubjects = "강의 가능 과목을 입력해주세요";
+        if (!formData.expertiseField.trim()) newErrors.expertiseField = '전문 분야를 선택해주세요';
+        if (!formData.teachableSubjects.trim()) newErrors.teachableSubjects = '강의 가능 과목을 입력해주세요';
         break;
     }
 
@@ -141,11 +131,12 @@ export default function PersonRegister() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (validateStep(currentStep)) {
-      alert("전문양성인 등록 신청이 완료되었습니다! (데모)");
-      navigate("/");
+      alert('전문양성인 등록 신청이 완료되었습니다! (데모)');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/');
     }
   };
 
@@ -157,25 +148,15 @@ export default function PersonRegister() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium mb-4">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              />
+            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
             전문양성인 등록 신청
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            전문양성인 등록
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">전문양성인 등록</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            첨단산업 분야 전문양성인으로 등록하여 인재 양성에 참여하세요.
-            단계별로 정보를 입력해주시면 심사 후 등록 여부를 안내드립니다.
+            첨단산업 분야 전문양성인으로 등록하여 인재 양성에 참여하세요. 단계별로 정보를 입력해주시면 심사 후 등록
+            여부를 안내드립니다.
           </p>
         </div>
 
@@ -201,10 +182,10 @@ export default function PersonRegister() {
                 key={section.id}
                 className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                   index === currentStep
-                    ? "border-purple-300 bg-purple-50"
+                    ? 'border-purple-300 bg-purple-50'
                     : index < currentStep
-                    ? "border-green-300 bg-green-50"
-                    : "border-gray-200 bg-gray-50"
+                      ? 'border-green-300 bg-green-50'
+                      : 'border-gray-200 bg-gray-50'
                 }`}
               >
                 <div className="flex items-center space-x-3 mb-2">
@@ -212,10 +193,10 @@ export default function PersonRegister() {
                   <h4
                     className={`font-medium ${
                       index === currentStep
-                        ? "text-purple-700"
+                        ? 'text-purple-700'
                         : index < currentStep
-                        ? "text-green-700"
-                        : "text-gray-600"
+                          ? 'text-green-700'
+                          : 'text-gray-600'
                     }`}
                   >
                     {section.title}
@@ -233,12 +214,8 @@ export default function PersonRegister() {
             <div className="flex items-center space-x-3">
               <span className="text-3xl">{formSections[currentStep].icon}</span>
               <div>
-                <h3 className="text-white text-xl font-bold">
-                  {formSections[currentStep].title}
-                </h3>
-                <p className="text-purple-100">
-                  {formSections[currentStep].description}
-                </p>
+                <h3 className="text-white text-xl font-bold">{formSections[currentStep].title}</h3>
+                <p className="text-purple-100">{formSections[currentStep].description}</p>
               </div>
             </div>
           </div>
@@ -258,15 +235,11 @@ export default function PersonRegister() {
                       value={formData.name}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.name
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="홍길동"
                     />
-                    {errors.name && (
-                      <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-                    )}
+                    {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                   </div>
 
                   <div>
@@ -279,16 +252,10 @@ export default function PersonRegister() {
                       value={formData.birthDate}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.birthDate
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.birthDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     />
-                    {errors.birthDate && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.birthDate}
-                      </p>
-                    )}
+                    {errors.birthDate && <p className="mt-1 text-sm text-red-600">{errors.birthDate}</p>}
                   </div>
                 </div>
 
@@ -302,26 +269,18 @@ export default function PersonRegister() {
                       value={formData.gender}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.gender
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.gender ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     >
                       <option value="">선택해주세요</option>
                       <option value="남성">남성</option>
                       <option value="여성">여성</option>
                     </select>
-                    {errors.gender && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.gender}
-                      </p>
-                    )}
+                    {errors.gender && <p className="mt-1 text-sm text-red-600">{errors.gender}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      국적
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">국적</label>
                     <input
                       type="text"
                       name="nationality"
@@ -344,17 +303,11 @@ export default function PersonRegister() {
                     value={formData.address}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                      errors.address
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="서울시 강남구 테헤란로 123"
                   />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.address}
-                    </p>
-                  )}
+                  {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -368,17 +321,11 @@ export default function PersonRegister() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.phone
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="010-0000-0000"
                     />
-                    {errors.phone && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.phone}
-                      </p>
-                    )}
+                    {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
                   </div>
 
                   <div>
@@ -391,17 +338,11 @@ export default function PersonRegister() {
                       value={formData.email}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.email
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="example@email.com"
                     />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
+                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                   </div>
                 </div>
               </div>
@@ -420,9 +361,7 @@ export default function PersonRegister() {
                       value={formData.finalEducation}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.finalEducation
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.finalEducation ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     >
                       <option value="">선택해주세요</option>
@@ -430,17 +369,11 @@ export default function PersonRegister() {
                       <option value="석사">석사</option>
                       <option value="박사">박사</option>
                     </select>
-                    {errors.finalEducation && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.finalEducation}
-                      </p>
-                    )}
+                    {errors.finalEducation && <p className="mt-1 text-sm text-red-600">{errors.finalEducation}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      학위 구분
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">학위 구분</label>
                     <input
                       type="text"
                       name="degree"
@@ -462,17 +395,11 @@ export default function PersonRegister() {
                     value={formData.university}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                      errors.university
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.university ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="○○대학교"
                   />
-                  {errors.university && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.university}
-                    </p>
-                  )}
+                  {errors.university && <p className="mt-1 text-sm text-red-600">{errors.university}</p>}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -486,17 +413,11 @@ export default function PersonRegister() {
                       value={formData.major}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.major
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.major ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="컴퓨터공학, 경영학 등"
                     />
-                    {errors.major && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.major}
-                      </p>
-                    )}
+                    {errors.major && <p className="mt-1 text-sm text-red-600">{errors.major}</p>}
                   </div>
 
                   <div>
@@ -509,26 +430,18 @@ export default function PersonRegister() {
                       value={formData.graduationYear}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.graduationYear
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.graduationYear ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="2020"
                       min="1970"
                       max="2024"
                     />
-                    {errors.graduationYear && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.graduationYear}
-                      </p>
-                    )}
+                    {errors.graduationYear && <p className="mt-1 text-sm text-red-600">{errors.graduationYear}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    추가 교육이력
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">추가 교육이력</label>
                   <textarea
                     name="additionalEducation"
                     value={formData.additionalEducation}
@@ -555,17 +468,11 @@ export default function PersonRegister() {
                       value={formData.currentCompany}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.currentCompany
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.currentCompany ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="회사명 또는 기관명"
                     />
-                    {errors.currentCompany && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.currentCompany}
-                      </p>
-                    )}
+                    {errors.currentCompany && <p className="mt-1 text-sm text-red-600">{errors.currentCompany}</p>}
                   </div>
 
                   <div>
@@ -578,17 +485,11 @@ export default function PersonRegister() {
                       value={formData.currentPosition}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                        errors.currentPosition
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.currentPosition ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="부장, 교수, 연구원 등"
                     />
-                    {errors.currentPosition && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.currentPosition}
-                      </p>
-                    )}
+                    {errors.currentPosition && <p className="mt-1 text-sm text-red-600">{errors.currentPosition}</p>}
                   </div>
                 </div>
 
@@ -601,9 +502,7 @@ export default function PersonRegister() {
                     value={formData.workExperience}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                      errors.workExperience
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.workExperience ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                   >
                     <option value="">선택해주세요</option>
@@ -613,11 +512,7 @@ export default function PersonRegister() {
                     <option value="15-20년">15-20년</option>
                     <option value="20년 이상">20년 이상</option>
                   </select>
-                  {errors.workExperience && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.workExperience}
-                    </p>
-                  )}
+                  {errors.workExperience && <p className="mt-1 text-sm text-red-600">{errors.workExperience}</p>}
                 </div>
 
                 <div>
@@ -630,23 +525,17 @@ export default function PersonRegister() {
                     onChange={handleInputChange}
                     rows="4"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none ${
-                      errors.industryExperience
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.industryExperience ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="해당 산업 분야에서의 주요 경력 사항을 구체적으로 기술해주세요"
                   />
                   {errors.industryExperience && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.industryExperience}
-                    </p>
+                    <p className="mt-1 text-sm text-red-600">{errors.industryExperience}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    교육/강의 경험
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">교육/강의 경험</label>
                   <textarea
                     name="teachingExperience"
                     value={formData.teachingExperience}
@@ -671,9 +560,7 @@ export default function PersonRegister() {
                     value={formData.expertiseField}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all ${
-                      errors.expertiseField
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.expertiseField ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                   >
                     <option value="">선택해주세요</option>
@@ -684,17 +571,11 @@ export default function PersonRegister() {
                     <option value="인공지능">인공지능</option>
                     <option value="기타">기타</option>
                   </select>
-                  {errors.expertiseField && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.expertiseField}
-                    </p>
-                  )}
+                  {errors.expertiseField && <p className="mt-1 text-sm text-red-600">{errors.expertiseField}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    보유 자격증 및 인증
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">보유 자격증 및 인증</label>
                   <textarea
                     name="certifications"
                     value={formData.certifications}
@@ -706,9 +587,7 @@ export default function PersonRegister() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    논문 및 출간물
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">논문 및 출간물</label>
                   <textarea
                     name="publications"
                     value={formData.publications}
@@ -720,9 +599,7 @@ export default function PersonRegister() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    연구 분야
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">연구 분야</label>
                   <textarea
                     name="researchAreas"
                     value={formData.researchAreas}
@@ -743,23 +620,15 @@ export default function PersonRegister() {
                     onChange={handleInputChange}
                     rows="4"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none ${
-                      errors.teachableSubjects
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.teachableSubjects ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="강의 가능한 과목명과 간단한 설명을 기술해주세요"
                   />
-                  {errors.teachableSubjects && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.teachableSubjects}
-                    </p>
-                  )}
+                  {errors.teachableSubjects && <p className="mt-1 text-sm text-red-600">{errors.teachableSubjects}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    포트폴리오 URL
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">포트폴리오 URL</label>
                   <input
                     type="url"
                     name="portfolioUrl"
@@ -777,15 +646,13 @@ export default function PersonRegister() {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={() => navigate("/")}
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    navigate('/');
+                  }}
                   className="inline-flex items-center px-6 py-3 text-gray-600 font-medium hover:text-purple-600 transition-colors duration-200"
                 >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -803,18 +670,8 @@ export default function PersonRegister() {
                       onClick={handlePrev}
                       className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200"
                     >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                       이전
                     </button>
@@ -827,18 +684,8 @@ export default function PersonRegister() {
                       className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
                       다음
-                      <svg
-                        className="w-5 h-5 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
+                      <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   ) : (
@@ -846,18 +693,8 @@ export default function PersonRegister() {
                       type="submit"
                       className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       등록 신청하기
                     </button>
@@ -871,21 +708,11 @@ export default function PersonRegister() {
         {/* Help Section */}
         <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
           <div className="text-center">
-            <h4 className="text-lg font-bold text-gray-900 mb-2">
-              전문양성인 등록 문의
-            </h4>
-            <p className="text-gray-600 mb-4">
-              전문양성인 등록 과정에서 궁금한 사항이 있으시면 언제든지
-              연락주세요.
-            </p>
+            <h4 className="text-lg font-bold text-gray-900 mb-2">전문양성인 등록 문의</h4>
+            <p className="text-gray-600 mb-4">전문양성인 등록 과정에서 궁금한 사항이 있으시면 언제든지 연락주세요.</p>
             <div className="flex justify-center items-center space-x-6">
               <div className="flex items-center space-x-2 text-purple-700">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -897,12 +724,7 @@ export default function PersonRegister() {
               </div>
               <div className="text-gray-400">|</div>
               <div className="flex items-center space-x-2 text-purple-700">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -919,8 +741,7 @@ export default function PersonRegister() {
         {/* Required Fields Notice */}
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-500">
-            <span className="text-red-500">*</span> 표시된 항목은 필수 입력
-            사항입니다
+            <span className="text-red-500">*</span> 표시된 항목은 필수 입력 사항입니다
           </p>
         </div>
       </div>

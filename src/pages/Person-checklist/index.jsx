@@ -1,136 +1,68 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const checklistData = [
   {
     id: 0,
-    title: "학력 자격 요건",
-    question: "귀하는 아래와 같은 학력 자격 요건 중 하나에 해당하십니까?",
+    title: '자격 요건',
+    question: '다음의 자격 중 한가지 이상 자격에 해당하는 사람(1~3중 하나이상)',
     details: [
       {
-        title: "최소 학력 요건",
-        content: "학사학위 이상 보유자 (단, 전문 분야에 따라 예외 가능)",
-        note: "전문대학 졸업자의 경우 해당 분야 10년 이상 실무 경력 시 인정 가능",
+        content: `1. 「국가기술자격법」에 따른 첨단산업 분야의 기술사 자격을 취득한 사람`,
+        table: {
+          headers: ['구분', '전문양성인 등록 해당 분야'],
+          rows: [
+            {
+              category: '기술사',
+              fields: [
+                '생산관리분야',
+                '기계제작분야',
+                '기계장비설비·설치분야 중 산업기계설비',
+                '자동차분야',
+                '금형·공작기계분야',
+                '금속·재료분야',
+                '용접분야',
+                '도장·도금분야',
+                '화공분야',
+                '전기분야 중 전기응용',
+                '전자분야',
+                '정보기술분야',
+                '통신분야',
+                '비파괴검사분야',
+              ],
+            },
+          ],
+        },
       },
       {
-        title: "전공 관련성",
-        content: "지원하고자 하는 전문 분야와 관련된 전공 또는 학위 보유",
-        note: "첨단산업 분야: 반도체, 이차전지, 디스플레이, 바이오 등",
+        content: `2. 「국가기술자격법」에 따른 첨단산업 분야의 기능장 자격을 취득한 사람`,
+        table: {
+          headers: ['구분', '전문양성인 등록 해당 분야'],
+          rows: [
+            {
+              category: '기능장',
+              fields: [
+                '생산관리분야',
+                '기계제작분야',
+                '기계장비설비·설치분야 중 산업기계설비',
+                '자동차분야',
+                '금형·공작기계분야',
+                '금속·재료분야',
+                '용접분야',
+                '도장·도금분야',
+                '화공분야',
+                '전기분야 중 전기응용',
+                '전자분야',
+                '정보기술분야',
+                '통신분야',
+                '비파괴검사분야',
+              ],
+            },
+          ],
+        },
       },
       {
-        title: "추가 학력 사항",
-        content:
-          "석사·박사학위 보유 시 우대, 해외 학위의 경우 교육부 인정 학위",
-        note: "교육부에서 인정하는 외국 대학의 학위 또는 이에 상응하는 학력",
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: "실무 경력 요건",
-    question: "귀하는 아래와 같은 실무 경력 요건을 만족하십니까?",
-    details: [
-      {
-        title: "최소 경력 기간",
-        content: "해당 전문 분야에서 5년 이상의 실무 경력 보유",
-        note: "산업체, 연구소, 대학 등에서의 관련 업무 경력 포함",
-      },
-      {
-        title: "경력의 연관성",
-        content: "지원 분야와 직접적으로 관련된 업무 경력",
-        note: "관련 업무: 연구개발, 제품개발, 기술지원, 품질관리, 생산관리 등",
-      },
-      {
-        title: "경력 증빙",
-        content: "재직증명서, 경력증명서 등 객관적 증빙 자료 보유",
-        note: "4대보험 가입 이력, 사업자등록증(프리랜서의 경우) 등으로 증빙 가능",
-      },
-      {
-        title: "리더십 경험",
-        content: "프로젝트 리더, 팀장급 이상의 리더십 경험 보유 (우대사항)",
-        note: "연구과제 책임자, 개발팀장, 기술자문 등의 경험",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "전문성 및 교육 역량",
-    question: "귀하는 아래와 같은 전문성 및 교육 역량을 보유하고 계십니까?",
-    details: [
-      {
-        title: "전문 지식 보유",
-        content: "해당 분야의 최신 기술 동향 및 전문 지식 보유",
-        note: "관련 학회 활동, 세미나 참석, 전문 교육 이수 등으로 증빙",
-      },
-      {
-        title: "교육 경험",
-        content: "교육, 강의, 멘토링 등의 경험 보유 (필수는 아니나 우대)",
-        note: "사내 교육, 외부 강의, 신입사원 멘토링, 기술 지도 등",
-      },
-      {
-        title: "자격증 및 인증",
-        content: "관련 분야의 국가기술자격증 또는 국제인증 보유",
-        note: "기술사, 기사, 산업기사 등 국가자격증 또는 국제공인자격증",
-      },
-      {
-        title: "연구 성과",
-        content: "논문, 특허, 기술개발 성과 등 전문성을 입증할 수 있는 실적",
-        note: "SCI급 논문, 국내외 특허, 기술이전 실적, 상품화 성과 등",
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "윤리 및 품성",
-    question: "귀하는 아래와 같은 윤리 및 품성 요건을 만족하십니까?",
-    details: [
-      {
-        title: "결격사유 없음",
-        content:
-          "금고 이상의 형을 받고 그 집행이 끝나지 아니하거나 그 집행을 받지 아니하기로 확정되지 아니한 자",
-        note: "범죄경력조회서 또는 관련 증명서로 확인",
-      },
-      {
-        title: "직업윤리 준수",
-        content: "해당 분야의 직업윤리 및 연구윤리를 준수할 의지와 능력 보유",
-        note: "연구부정행위, 기술유출 등의 이력이 없어야 함",
-      },
-      {
-        title: "교육자 품성",
-        content: "교육자로서 적합한 인격과 품성을 갖춘 자",
-        note: "추천서, 인성검증 등을 통해 확인 가능",
-      },
-      {
-        title: "보안서약",
-        content: "교육 과정에서 알게 되는 기업 기밀 정보에 대한 보안 유지 서약",
-        note: "보안서약서 작성 및 관련 교육 이수 필요",
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "추가 우대 사항",
-    question: "귀하는 아래와 같은 추가 우대 사항에 해당하십니까?",
-    details: [
-      {
-        title: "다양한 경력 배경",
-        content: "산업체, 연구소, 대학 등 다양한 기관에서의 경력 보유",
-        note: "다양한 관점에서의 실무 경험은 교육 효과를 높일 수 있음",
-      },
-      {
-        title: "국제 경험",
-        content: "해외 연수, 국제 프로젝트 참여, 글로벌 기업 근무 경험",
-        note: "국제적 시각과 글로벌 트렌드에 대한 이해도 평가",
-      },
-      {
-        title: "네트워크 보유",
-        content: "해당 분야의 전문가 네트워크 및 산업체 연결망 보유",
-        note: "기업과의 연계 교육 및 실무진과의 협력 가능성",
-      },
-      {
-        title: "커뮤니케이션 역량",
-        content: "우수한 의사소통 능력 및 프레젠테이션 스킬 보유",
-        note: "교육 효과 극대화를 위한 핵심 역량",
+        content: `3. 첨단산업 분야의 학사 이상의 학위를 취득한 후 해당 분야에서 10년 이상의 실무경력이 있는 사람 또는 첨단산업 분야의 전문학사 학위를 취득한 후 해당 분야에서 13년 이상의 실무경력이 있는 사람`,
       },
     ],
   },
@@ -147,18 +79,16 @@ export default function PersonChecklist() {
     setChecks(newChecks);
   };
 
-  const scrollToSection = (index) => {
+  const scrollToSection = index => {
     const element = document.getElementById(`section-${index}`);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = checklistData.map((_, index) =>
-        document.getElementById(`section-${index}`)
-      );
+      const sections = checklistData.map((_, index) => document.getElementById(`section-${index}`));
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -170,19 +100,20 @@ export default function PersonChecklist() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const allConfirmed = checks.every((check) => check === true);
-  const completedCount = checks.filter((check) => check === true).length;
+  const anyConfirmed = checks.some(check => check === true);
+  const completedCount = checks.filter(check => check === true).length;
   const progressPercentage = (completedCount / checklistData.length) * 100;
 
   const handleNext = () => {
-    if (allConfirmed) {
-      navigate("/person-register");
+    if (anyConfirmed) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/person-register');
     } else {
-      alert("모든 항목을 확인으로 체크해 주세요.");
+      alert('자격 요건 중 하나라도 해당하는지 확인해 주세요.');
     }
   };
 
@@ -191,12 +122,8 @@ export default function PersonChecklist() {
       <div className="container-max max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium mb-4">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
+          <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
+            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -205,12 +132,10 @@ export default function PersonChecklist() {
             </svg>
             전문양성인 등록 체크리스트
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            전문양성인 등록 자격 체크리스트
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">전문양성인 등록 자격 체크리스트</h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            첨단산업 분야 전문양성인 등록을 위한 자격 요건들을 체크해보세요.
-            모든 항목을 만족해야 등록 신청이 가능합니다.
+            전문양성인 등록을 위한 자격 요건을 체크해보세요. <br />
+            다음 자격 중 어느 하나에 해당하면 등록 신청이 가능합니다.
           </p>
         </div>
 
@@ -219,22 +144,18 @@ export default function PersonChecklist() {
           <div className="bg-white rounded-2xl p-4 shadow-xl border border-gray-200 w-72">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-sm font-semibold text-gray-900">진행률</h3>
-              <span className="text-lg font-bold text-purple-600">
+              <span className="text-lg font-bold text-blue-600">
                 {completedCount}/{checklistData.length}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div
-                className="bg-gradient-to-r from-purple-500 to-pink-600 h-2 rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
             <p className="text-xs text-gray-600 mb-3">
-              {allConfirmed
-                ? "모든 항목을 완료했습니다! 🎉"
-                : `${
-                    checklistData.length - completedCount
-                  }개 항목이 남았습니다.`}
+              {anyConfirmed ? '자격 요건을 확인했습니다! 🎉' : '자격 요건을 확인해주세요.'}
             </p>
 
             {/* Progress Steps */}
@@ -244,29 +165,23 @@ export default function PersonChecklist() {
                   key={item.id}
                   onClick={() => scrollToSection(index)}
                   className={`flex items-center text-xs w-full text-left p-2 rounded-lg transition-all hover:bg-gray-50 ${
-                    activeSection === index
-                      ? "bg-purple-50 border-l-2 border-purple-500"
-                      : ""
+                    activeSection === index ? 'bg-blue-50 border-l-2 border-blue-500' : ''
                   }`}
                 >
                   <div
                     className={`w-3 h-3 rounded-full mr-2 flex-shrink-0 ${
-                      checks[index] === true
-                        ? "bg-green-500"
-                        : checks[index] === false
-                        ? "bg-red-500"
-                        : "bg-gray-300"
+                      checks[index] === true ? 'bg-green-500' : checks[index] === false ? 'bg-red-500' : 'bg-gray-300'
                     }`}
                   ></div>
                   <span
                     className={`truncate ${
                       checks[index] === true
-                        ? "text-green-700 font-medium"
+                        ? 'text-green-700 font-medium'
                         : checks[index] === false
-                        ? "text-red-700"
-                        : activeSection === index
-                        ? "text-purple-700 font-medium"
-                        : "text-gray-600"
+                          ? 'text-red-700'
+                          : activeSection === index
+                            ? 'text-blue-700 font-medium'
+                            : 'text-gray-600'
                     }`}
                   >
                     {item.title}
@@ -281,20 +196,18 @@ export default function PersonChecklist() {
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-8 xl:hidden">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-900">진행률</h3>
-            <span className="text-2xl font-bold text-purple-600">
+            <span className="text-2xl font-bold text-blue-600">
               {completedCount}/{checklistData.length}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
             <div
-              className="bg-gradient-to-r from-purple-500 to-pink-600 h-3 rounded-full transition-all duration-500 ease-out"
+              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
           <p className="text-sm text-gray-600">
-            {allConfirmed
-              ? "모든 항목을 완료했습니다! 🎉"
-              : `${checklistData.length - completedCount}개 항목이 남았습니다.`}
+            {anyConfirmed ? '자격 요건을 확인했습니다! 🎉' : '자격 요건을 확인해주세요.'}
           </p>
         </div>
 
@@ -306,59 +219,208 @@ export default function PersonChecklist() {
               id={`section-${index}`}
               className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 ${
                 checks[index] === true
-                  ? "border-green-200 bg-green-50"
+                  ? 'border-green-200 bg-green-50'
                   : checks[index] === false
-                  ? "border-red-200 bg-red-50"
-                  : "border-gray-200 hover:border-purple-200"
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-gray-200 hover:border-blue-200'
               }`}
             >
               <div className="p-6">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-8">
                   <div className="flex-1">
-                    <div className="flex items-center mb-3">
+                    <div className="flex items-center mb-4">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mr-3 ${
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-4 shadow-lg transition-all duration-300 ${
                           checks[index] === true
-                            ? "bg-green-500"
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-600'
                             : checks[index] === false
-                            ? "bg-red-500"
-                            : "bg-gray-400"
+                              ? 'bg-gradient-to-r from-red-500 to-rose-600'
+                              : 'bg-gradient-to-r from-gray-400 to-gray-500'
                         }`}
                       >
-                        {checks[index] === true
-                          ? "✓"
-                          : checks[index] === false
-                          ? "✗"
-                          : index + 1}
+                        {checks[index] === true ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : checks[index] === false ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <span className="text-lg">{index + 1}</span>
+                        )}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {item.title}
-                      </h3>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{item.title}</h3>
+                        <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"></div>
+                      </div>
                     </div>
-                    <p className="text-gray-700 font-medium mb-4">
-                      {item.question}
-                    </p>
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100/50 mb-6">
+                      <div className="flex items-start">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-lg text-gray-800 font-semibold leading-relaxed">{item.question}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Details */}
-                <div className="space-y-4 mb-6">
+                <div className="space-y-6 mb-6">
                   {item.details.map((detail, detailIndex) => (
                     <div
                       key={detailIndex}
-                      className="border-l-4 border-purple-200 pl-4"
+                      className="bg-gradient-to-r from-blue-50/30 to-indigo-50/30 rounded-xl p-6 border border-blue-100/50"
                     >
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        {detail.title}
-                      </h4>
+                      {detail.title && (
+                        <div className="flex items-center mb-4">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                          <h4 className="text-lg font-bold text-gray-900">{detail.title}</h4>
+                        </div>
+                      )}
+                      {detail.subtitle && (
+                        <div className="bg-blue-100/50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4">
+                          <p className="text-sm font-medium text-blue-800">{detail.subtitle}</p>
+                        </div>
+                      )}
                       {detail.content && (
-                        <p className="text-gray-700 mb-2">{detail.content}</p>
+                        <div className="bg-white/70 backdrop-blur-sm rounded-lg p-5 border border-gray-200/50 shadow-sm">
+                          <div className="text-left">
+                            {detail.content.split('\n').map((line, lineIndex) => {
+                              if (line.trim().startsWith('*')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-3 text-left">
+                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-800 leading-relaxed font-medium text-left">
+                                      {line.replace('*', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim().startsWith('-')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-2 ml-4 text-left">
+                                    <div className="w-1 h-1 bg-gray-400 rounded-full mt-2.5 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-700 leading-relaxed text-left">
+                                      {line.replace('-', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim().startsWith('  *')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-1 ml-8 text-left">
+                                    <div className="w-1 h-1 bg-gray-300 rounded-full mt-2.5 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-600 leading-relaxed text-sm text-left">
+                                      {line.replace('  *', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim()) {
+                                return (
+                                  <p
+                                    key={lineIndex}
+                                    className="text-gray-800 leading-relaxed mb-3 font-medium text-left"
+                                  >
+                                    {line.trim()}
+                                  </p>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
+                        </div>
                       )}
                       {detail.note && (
-                        <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">
-                          💡 {detail.note}
-                        </p>
+                        <div className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+                          <div className="flex items-start">
+                            <div className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-amber-800 mb-1">참고사항</p>
+                              <p className="text-sm text-amber-700 leading-relaxed">{detail.note}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {detail.table && (
+                        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                          <div className="flex items-center mb-4">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <h5 className="text-lg font-bold text-blue-900">분야별 세부 영역</h5>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
+                              <thead>
+                                <tr className="bg-gradient-to-r from-blue-100 to-indigo-100">
+                                  {detail.table.headers.map((header, headerIndex) => (
+                                    <th
+                                      key={headerIndex}
+                                      className={`px-4 py-3 text-sm font-semibold text-gray-800 text-center border-r border-gray-200 last:border-r-0 ${
+                                        headerIndex === 0 ? 'text-left' : ''
+                                      }`}
+                                    >
+                                      {header}
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {detail.table.rows.map((row, rowIndex) => (
+                                  <tr
+                                    key={rowIndex}
+                                    className={`border-b border-gray-100 last:border-b-0 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}
+                                  >
+                                    <td className="px-4 py-3 text-sm font-medium text-gray-800 border-r border-gray-200">
+                                      <div>
+                                        <div className="font-semibold text-blue-800">{row.category}</div>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-700 text-left">
+                                      <div className="space-y-1">
+                                        {row.fields.map((field, fieldIndex) => (
+                                          <div key={fieldIndex} className="flex items-start">
+                                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                            <span className="leading-relaxed">{field}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       )}
                     </div>
                   ))}
@@ -369,8 +431,8 @@ export default function PersonChecklist() {
                   <label
                     className={`flex items-center space-x-3 cursor-pointer p-4 rounded-lg transition-all ${
                       checks[index] === true
-                        ? "bg-green-100 border-2 border-green-300"
-                        : "hover:bg-green-50 border-2 border-transparent"
+                        ? 'bg-green-100 border-2 border-green-300'
+                        : 'hover:bg-green-50 border-2 border-transparent'
                     }`}
                   >
                     <input
@@ -381,25 +443,21 @@ export default function PersonChecklist() {
                       className="w-5 h-5 text-green-600 focus:ring-green-500"
                     />
                     <span className="font-medium text-green-700">
-                      <svg
-                        className="w-5 h-5 inline mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                      <svg className="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      해당함
+                      확인
                     </span>
                   </label>
                   <label
                     className={`flex items-center space-x-3 cursor-pointer p-4 rounded-lg transition-all ${
                       checks[index] === false
-                        ? "bg-red-100 border-2 border-red-300"
-                        : "hover:bg-red-50 border-2 border-transparent"
+                        ? 'bg-red-100 border-2 border-red-300'
+                        : 'hover:bg-red-50 border-2 border-transparent'
                     }`}
                   >
                     <input
@@ -410,18 +468,14 @@ export default function PersonChecklist() {
                       className="w-5 h-5 text-red-600 focus:ring-red-500"
                     />
                     <span className="font-medium text-red-700">
-                      <svg
-                        className="w-5 h-5 inline mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                      <svg className="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      해당하지 않음
+                      미확인
                     </span>
                   </label>
                 </div>
@@ -434,12 +488,7 @@ export default function PersonChecklist() {
         <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
           <div className="mb-6">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -448,32 +497,24 @@ export default function PersonChecklist() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              자격 확인 완료
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">자격 확인 완료</h3>
             <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-              전문양성인 등록 자격 요건 확인을 완료하셨습니다. 모든 요건을
-              만족하시면 전문양성인 등록 신청이 가능합니다.
+              전문양성인 등록 자격 요건 확인을 완료하셨습니다. 자격 요건 중 하나라도 해당되면 전문양성인 등록 신청이
+              가능합니다.
             </p>
           </div>
 
-          {!allConfirmed && (
+          {!anyConfirmed && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-amber-600 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-5 h-5 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-amber-800 font-medium">
-                  모든 항목을 '해당함'으로 체크해야 등록 신청이 가능합니다.
-                </span>
+                <span className="text-amber-800 font-medium">자격 요건 중 하나라도 해당하는지 확인해주세요.</span>
               </div>
             </div>
           )}
@@ -481,50 +522,34 @@ export default function PersonChecklist() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={handleNext}
-              disabled={!allConfirmed}
+              disabled={!anyConfirmed}
               className={`inline-flex items-center px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
-                allConfirmed
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                anyConfirmed
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              {allConfirmed ? (
+              {anyConfirmed ? (
                 <>
                   자격 확인 후 등록 신청
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </>
               ) : (
-                "모든 항목을 확인해주세요"
+                '자격 요건을 확인해주세요'
               )}
             </button>
-
-
           </div>
         </div>
 
         {/* Important Notice */}
         <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
           <div className="text-center">
-            <h4 className="text-xl font-bold text-gray-900 mb-4">
-              📋 전문양성인 등록 안내
-            </h4>
+            <h4 className="text-xl font-bold text-gray-900 mb-4">📋 전문양성인 등록 안내</h4>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div>
-                <h5 className="font-semibold text-purple-700 mb-2">
-                  등록 절차
-                </h5>
+                <h5 className="font-semibold text-purple-700 mb-2">등록 절차</h5>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• 1단계: 자격 요건 확인 (현재 단계)</li>
                   <li>• 2단계: 온라인 등록 신청</li>
@@ -537,12 +562,7 @@ export default function PersonChecklist() {
                 <h5 className="font-semibold text-purple-700 mb-2">문의사항</h5>
                 <div className="text-sm text-gray-600 space-y-2">
                   <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-2 text-purple-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -553,12 +573,7 @@ export default function PersonChecklist() {
                     <span>전화: 1379 → 4번</span>
                   </div>
                   <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-2 text-purple-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -568,9 +583,7 @@ export default function PersonChecklist() {
                     </svg>
                     <span>이메일: expert@kiat.or.kr</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    운영시간: 평일 09:00~18:00 (점심시간 12:00~13:00 제외)
-                  </p>
+                  <p className="text-xs text-gray-500 mt-2">운영시간: 평일 09:00~18:00 (점심시간 12:00~13:00 제외)</p>
                 </div>
               </div>
             </div>

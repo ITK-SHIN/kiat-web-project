@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const formSections = [
   {
-    id: "basic",
-    title: "기본 정보",
-    icon: "🏢",
-    description: "기업의 기본 정보를 입력해주세요",
+    id: 'basic',
+    title: '기본 정보',
+    icon: '🏢',
+    description: '기업의 기본 정보를 입력해주세요',
   },
   {
-    id: "contact",
-    title: "담당자 정보",
-    icon: "👤",
-    description: "담당자 연락처 정보를 입력해주세요",
+    id: 'contact',
+    title: '담당자 정보',
+    icon: '👤',
+    description: '담당자 연락처 정보를 입력해주세요',
   },
   {
-    id: "facility",
-    title: "교육시설 정보",
-    icon: "🏫",
-    description: "교육시설 현황을 입력해주세요",
+    id: 'facility',
+    title: '교육시설 정보',
+    icon: '🏫',
+    description: '교육시설 현황을 입력해주세요',
   },
 ];
 
@@ -26,73 +26,61 @@ export default function Register() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
-    companyName: "",
-    businessNumber: "",
-    address: "",
-    establishedYear: "",
-    employeeCount: "",
-    contactName: "",
-    contactPhone: "",
-    contactEmail: "",
-    department: "",
-    facilityOverview: "",
-    facilitySize: "",
-    facilityLocation: "",
-    equipment: "",
+    companyName: '',
+    businessNumber: '',
+    address: '',
+    establishedYear: '',
+    employeeCount: '',
+    contactName: '',
+    contactPhone: '',
+    contactEmail: '',
+    department: '',
+    facilityOverview: '',
+    facilitySize: '',
+    facilityLocation: '',
+    equipment: '',
   });
 
   const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({
+      setErrors(prev => ({
         ...prev,
-        [name]: "",
+        [name]: '',
       }));
     }
   };
 
-  const validateStep = (step) => {
+  const validateStep = step => {
     const newErrors = {};
 
     switch (step) {
       case 0: // Basic Info
-        if (!formData.companyName.trim())
-          newErrors.companyName = "기업명을 입력해주세요";
-        if (!formData.businessNumber.trim())
-          newErrors.businessNumber = "사업자등록번호를 입력해주세요";
-        if (!formData.address.trim()) newErrors.address = "주소를 입력해주세요";
-        if (!formData.establishedYear.trim())
-          newErrors.establishedYear = "설립년도를 입력해주세요";
-        if (!formData.employeeCount.trim())
-          newErrors.employeeCount = "직원 수를 선택해주세요";
+        if (!formData.companyName.trim()) newErrors.companyName = '기업명을 입력해주세요';
+        if (!formData.businessNumber.trim()) newErrors.businessNumber = '사업자등록번호를 입력해주세요';
+        if (!formData.address.trim()) newErrors.address = '주소를 입력해주세요';
+        if (!formData.establishedYear.trim()) newErrors.establishedYear = '설립년도를 입력해주세요';
+        if (!formData.employeeCount.trim()) newErrors.employeeCount = '직원 수를 선택해주세요';
         break;
       case 1: // Contact Info
-        if (!formData.contactName.trim())
-          newErrors.contactName = "담당자 이름을 입력해주세요";
-        if (!formData.contactPhone.trim())
-          newErrors.contactPhone = "연락처를 입력해주세요";
-        if (!formData.contactEmail.trim())
-          newErrors.contactEmail = "이메일을 입력해주세요";
-        if (!formData.department.trim())
-          newErrors.department = "부서/직책을 입력해주세요";
+        if (!formData.contactName.trim()) newErrors.contactName = '담당자 이름을 입력해주세요';
+        if (!formData.contactPhone.trim()) newErrors.contactPhone = '연락처를 입력해주세요';
+        if (!formData.contactEmail.trim()) newErrors.contactEmail = '이메일을 입력해주세요';
+        if (!formData.department.trim()) newErrors.department = '부서/직책을 입력해주세요';
         break;
       case 2: // Facility Info
-        if (!formData.facilityOverview.trim())
-          newErrors.facilityOverview = "교육시설 개요를 입력해주세요";
-        if (!formData.facilitySize.trim())
-          newErrors.facilitySize = "시설 규모를 입력해주세요";
-        if (!formData.facilityLocation.trim())
-          newErrors.facilityLocation = "시설 위치를 입력해주세요";
-        if (!formData.equipment.trim())
-          newErrors.equipment = "주요 장비 및 시설을 입력해주세요";
+        if (!formData.facilityOverview.trim()) newErrors.facilityOverview = '교육시설 개요를 입력해주세요';
+        if (!formData.facilitySize.trim()) newErrors.facilitySize = '시설 규모를 입력해주세요';
+        if (!formData.facilityLocation.trim()) newErrors.facilityLocation = '시설 위치를 입력해주세요';
+        if (!formData.equipment.trim()) newErrors.equipment = '주요 장비 및 시설을 입력해주세요';
         break;
     }
 
@@ -114,11 +102,12 @@ export default function Register() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (validateStep(currentStep)) {
-      alert("등록 신청이 완료되었습니다! (데모)");
-      navigate("/");
+      alert('등록 신청이 완료되었습니다! (데모)');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/');
     }
   };
 
@@ -130,25 +119,14 @@ export default function Register() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 2L3 7v11a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V7l-7-5z"
-                clipRule="evenodd"
-              />
+            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 2L3 7v11a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V7l-7-5z" clipRule="evenodd" />
             </svg>
             기관 등록 신청
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            기업인재개발기관 등록
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">기업인재개발기관 등록</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            사내대학원 설립을 위한 기관 정보를 단계별로 입력해주세요. 모든
-            정보는 안전하게 보호됩니다.
+            사내대학원 설립을 위한 기관 정보를 단계별로 입력해주세요. 모든 정보는 안전하게 보호됩니다.
           </p>
         </div>
 
@@ -174,21 +152,17 @@ export default function Register() {
                 key={section.id}
                 className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                   index === currentStep
-                    ? "border-blue-300 bg-blue-50"
+                    ? 'border-blue-300 bg-blue-50'
                     : index < currentStep
-                    ? "border-green-300 bg-green-50"
-                    : "border-gray-200 bg-gray-50"
+                      ? 'border-green-300 bg-green-50'
+                      : 'border-gray-200 bg-gray-50'
                 }`}
               >
                 <div className="flex items-center space-x-3 mb-2">
                   <span className="text-2xl">{section.icon}</span>
                   <h4
                     className={`font-medium ${
-                      index === currentStep
-                        ? "text-blue-700"
-                        : index < currentStep
-                        ? "text-green-700"
-                        : "text-gray-600"
+                      index === currentStep ? 'text-blue-700' : index < currentStep ? 'text-green-700' : 'text-gray-600'
                     }`}
                   >
                     {section.title}
@@ -206,12 +180,8 @@ export default function Register() {
             <div className="flex items-center space-x-3">
               <span className="text-3xl">{formSections[currentStep].icon}</span>
               <div>
-                <h3 className="text-white text-xl font-bold">
-                  {formSections[currentStep].title}
-                </h3>
-                <p className="text-blue-100">
-                  {formSections[currentStep].description}
-                </p>
+                <h3 className="text-white text-xl font-bold">{formSections[currentStep].title}</h3>
+                <p className="text-blue-100">{formSections[currentStep].description}</p>
               </div>
             </div>
           </div>
@@ -231,17 +201,11 @@ export default function Register() {
                       value={formData.companyName}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.companyName
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.companyName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="기업명을 입력해주세요"
                     />
-                    {errors.companyName && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.companyName}
-                      </p>
-                    )}
+                    {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName}</p>}
                   </div>
 
                   <div>
@@ -254,17 +218,11 @@ export default function Register() {
                       value={formData.businessNumber}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.businessNumber
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.businessNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="000-00-00000"
                     />
-                    {errors.businessNumber && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.businessNumber}
-                      </p>
-                    )}
+                    {errors.businessNumber && <p className="mt-1 text-sm text-red-600">{errors.businessNumber}</p>}
                   </div>
                 </div>
 
@@ -278,17 +236,11 @@ export default function Register() {
                     value={formData.address}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                      errors.address
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="기업 주소를 입력해주세요"
                   />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.address}
-                    </p>
-                  )}
+                  {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -302,19 +254,13 @@ export default function Register() {
                       value={formData.establishedYear}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.establishedYear
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.establishedYear ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="2020"
                       min="1900"
                       max="2024"
                     />
-                    {errors.establishedYear && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.establishedYear}
-                      </p>
-                    )}
+                    {errors.establishedYear && <p className="mt-1 text-sm text-red-600">{errors.establishedYear}</p>}
                   </div>
 
                   <div>
@@ -326,9 +272,7 @@ export default function Register() {
                       value={formData.employeeCount}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.employeeCount
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.employeeCount ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     >
                       <option value="">선택해주세요</option>
@@ -336,11 +280,7 @@ export default function Register() {
                       <option value="500-1000">500-1,000명</option>
                       <option value="1000+">1,000명 이상</option>
                     </select>
-                    {errors.employeeCount && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.employeeCount}
-                      </p>
-                    )}
+                    {errors.employeeCount && <p className="mt-1 text-sm text-red-600">{errors.employeeCount}</p>}
                   </div>
                 </div>
               </div>
@@ -360,17 +300,11 @@ export default function Register() {
                       value={formData.contactName}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.contactName
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.contactName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="담당자 성명을 입력해주세요"
                     />
-                    {errors.contactName && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.contactName}
-                      </p>
-                    )}
+                    {errors.contactName && <p className="mt-1 text-sm text-red-600">{errors.contactName}</p>}
                   </div>
 
                   <div>
@@ -383,17 +317,11 @@ export default function Register() {
                       value={formData.department}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.department
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.department ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="인사팀 과장"
                     />
-                    {errors.department && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.department}
-                      </p>
-                    )}
+                    {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department}</p>}
                   </div>
                 </div>
 
@@ -408,17 +336,11 @@ export default function Register() {
                       value={formData.contactPhone}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.contactPhone
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.contactPhone ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="010-0000-0000"
                     />
-                    {errors.contactPhone && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.contactPhone}
-                      </p>
-                    )}
+                    {errors.contactPhone && <p className="mt-1 text-sm text-red-600">{errors.contactPhone}</p>}
                   </div>
 
                   <div>
@@ -431,17 +353,11 @@ export default function Register() {
                       value={formData.contactEmail}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.contactEmail
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.contactEmail ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="contact@company.com"
                     />
-                    {errors.contactEmail && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.contactEmail}
-                      </p>
-                    )}
+                    {errors.contactEmail && <p className="mt-1 text-sm text-red-600">{errors.contactEmail}</p>}
                   </div>
                 </div>
               </div>
@@ -460,17 +376,11 @@ export default function Register() {
                     onChange={handleInputChange}
                     rows="4"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none ${
-                      errors.facilityOverview
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.facilityOverview ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="교육시설의 규모, 위치, 주요 장비 등을 간략히 설명해주세요"
                   />
-                  {errors.facilityOverview && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.facilityOverview}
-                    </p>
-                  )}
+                  {errors.facilityOverview && <p className="mt-1 text-sm text-red-600">{errors.facilityOverview}</p>}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -484,17 +394,11 @@ export default function Register() {
                       value={formData.facilitySize}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.facilitySize
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.facilitySize ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="예: 연면적 1,000㎡"
                     />
-                    {errors.facilitySize && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.facilitySize}
-                      </p>
-                    )}
+                    {errors.facilitySize && <p className="mt-1 text-sm text-red-600">{errors.facilitySize}</p>}
                   </div>
 
                   <div>
@@ -507,17 +411,11 @@ export default function Register() {
                       value={formData.facilityLocation}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                        errors.facilityLocation
-                          ? "border-red-300 bg-red-50"
-                          : "border-gray-300"
+                        errors.facilityLocation ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                       placeholder="예: 본사 5층"
                     />
-                    {errors.facilityLocation && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.facilityLocation}
-                      </p>
-                    )}
+                    {errors.facilityLocation && <p className="mt-1 text-sm text-red-600">{errors.facilityLocation}</p>}
                   </div>
                 </div>
 
@@ -531,17 +429,11 @@ export default function Register() {
                     onChange={handleInputChange}
                     rows="3"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none ${
-                      errors.equipment
-                        ? "border-red-300 bg-red-50"
-                        : "border-gray-300"
+                      errors.equipment ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="강의실, 실습실, 장비 등 보유 시설을 나열해주세요"
                   />
-                  {errors.equipment && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.equipment}
-                    </p>
-                  )}
+                  {errors.equipment && <p className="mt-1 text-sm text-red-600">{errors.equipment}</p>}
                 </div>
               </div>
             )}
@@ -551,15 +443,13 @@ export default function Register() {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={() => navigate("/steps")}
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    navigate('/steps');
+                  }}
                   className="inline-flex items-center px-6 py-3 text-gray-600 font-medium hover:text-blue-600 transition-colors duration-200"
                 >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -577,18 +467,8 @@ export default function Register() {
                       onClick={handlePrev}
                       className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200"
                     >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                       이전
                     </button>
@@ -601,18 +481,8 @@ export default function Register() {
                       className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
                       다음
-                      <svg
-                        className="w-5 h-5 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
+                      <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   ) : (
@@ -620,18 +490,8 @@ export default function Register() {
                       type="submit"
                       className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                     >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       등록 신청하기
                     </button>
@@ -645,20 +505,11 @@ export default function Register() {
         {/* Help Section */}
         <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
           <div className="text-center">
-            <h4 className="text-lg font-bold text-gray-900 mb-2">
-              도움이 필요하시나요?
-            </h4>
-            <p className="text-gray-600 mb-4">
-              등록 과정에서 궁금한 사항이 있으시면 언제든지 연락주세요.
-            </p>
+            <h4 className="text-lg font-bold text-gray-900 mb-2">도움이 필요하시나요?</h4>
+            <p className="text-gray-600 mb-4">등록 과정에서 궁금한 사항이 있으시면 언제든지 연락주세요.</p>
             <div className="flex justify-center items-center space-x-6">
               <div className="flex items-center space-x-2 text-blue-700">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -670,12 +521,7 @@ export default function Register() {
               </div>
               <div className="text-gray-400">|</div>
               <div className="flex items-center space-x-2 text-blue-700">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -692,8 +538,7 @@ export default function Register() {
         {/* Required Fields Notice */}
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-500">
-            <span className="text-red-500">*</span> 표시된 항목은 필수 입력
-            사항입니다
+            <span className="text-red-500">*</span> 표시된 항목은 필수 입력 사항입니다
           </p>
         </div>
       </div>

@@ -1,129 +1,101 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const checklistData = [
   {
     id: 0,
-    title: "설치대상자 기준 확인",
-    question:
-      "귀사는 아래와 같은 설치대상자 기준 중 한가지에 해당하고 관련 서류를 가지고 있습니까?",
+    title: '첨단산업분야 국내 기업',
+    question: '귀사는 아래의 첨단산업분야 국내 기업 기준에 해당합니까?',
     details: [
       {
-        title: "대규모 사업장",
-        content:
-          "｢상법｣또는 특별법에 따라 설립된 법인으로, 종업원의 수가 200명 이상*인 사업장을 경영하는 자(여러 사업장이 공동으로 참여하는 경우도 포함)",
-        note: "* 해당 사업장에 고용된 종업원 및 해당 사업장에서 일하는 다른 업체 종업원도 포함",
+        content: `* 「국가첨단전략산업 경쟁력 강화 및 보호에 관한 특별조치법」 제2조제2호에 따른 국가첨단전략산업
+* 「인적자원개발 기본법」 제7조제2항제2호가목의 첨단분야 중 같은 법에 따른 국가인적자원위원회가 산업통상자원부장관과 협의하여 지정하는 첨단분야
+* 그 밖에 산업통상자원부장관이 대통령령으로 정하는 바에 따라 관계 중앙행정기관의 장과 협의하여 지정하는 산업`,
+        note: `※ ’25.1월 현재 반도체, 디스플레이, 이차전지, 바이오 등 4개 산업이 첨단산업에 해당
+※ <부록>의 한국표준산업분류에 해당하지는 않으나 4개 첨단산업에 종사하는 경우 인재혁신협의체의 확인서를 발급받아 제출`,
       },
       {
-        title: "산업단지 입주기업의 연합체",
-        content:
-          "｢산업입지 및 개발에 관한 법률｣에 따라 설립된 산업단지에 입주한 기업들의 연합체(연합체의 종업원의 수 200명 이상)",
-      },
-      {
-        title: "산업부문별 인적자원개발협의체",
-        content:
-          "｢산업발전법｣제12조제2항에 따라 구성된 산업부문별 인적자원개발협의체(종업원의 수 200명 이상)",
+        content: `- (기업) 「중소기업기본법」, 「중견기업 성장촉진 및 경쟁력 강화에 관한 특별법」 등 관계 법령에 의거한 중소기업, 중견기업 및 그 밖의 기업
+  * (중소기업) 「중소기업기본법」 제2조에 따른 중소기업
+  * (중견기업) 「중견기업 성장촉진 및 경쟁력 강화에 관한 특별법」 제2조제1호에 따른 중견기업
+  * (그 밖의 기업) 중소기업과 중견기업 이외의 기업`,
       },
     ],
   },
   {
     id: 1,
-    title: "첨단산업 분야 해당 여부",
-    question:
-      "귀사는 설치를 원하는 사내대학원이 아래와 같은 국가첨단산업 범위에 포함됩니까?",
-    subtitle: "｢첨단산업인재혁신법｣제2조제1호 각 목에 따른 '첨단산업' 분야",
+    title: '강의･전담인력',
+    question: '귀사는 아래의 강의･전담인력 기준을 충족합니까?',
     details: [
       {
-        title: "반도체",
-        content:
-          "△첨단 메모리반도체 산업 △첨단 시스템반도체 산업 △첨단 패키징 산업 △연관 산업(자동차, 통신, 사물인터넷 등)에 미치는 파급효과가 현저한 반도체 산업",
+        content: `(강의인력 자격) ▲대학이나 공인된 연구기관에서 첨단산업 또는 첨단산업 인재혁신과 관련된 분야의 조교수 이상 또는 이에 상당하는 직에 있는 사람 ▲첨단산업 분야의 학사 이상의 학위를 취득한 후 해당 분야의 인재혁신 활동에 관한 실무경력이 4년 이상인 사람 ▲이와 동등한 자격이 있다고 산업통상자원부장관이 정하여 고시하는 자격을 갖춘 사람`,
       },
       {
-        title: "이차전지",
-        content:
-          "△고에너지밀도 배터리 산업 △고용량 양극재 산업 △초고성능 전극 또는 차세대 배터리 산업",
-      },
-      {
-        title: "디스플레이",
-        content:
-          "△능동형 유기발광다이오드(AMOLED) 패널 산업 △친환경 퀀텀닷(QD)소재 패널 산업 △마이크로 발광다이오드(LED) 패널 산업 △나노 발광다이오드(LED) 패널 산업 △차세대 디스플레이 산업",
-      },
-      {
-        title: "바이오",
-        content: "△바이오의약품 산업 △오가노이드 재생치료제 산업",
+        content: `(전담인력 수) ▲중소기업 3명 이상 ▲중견기업 7명 이상 ▲그 밖의 기업 10명 이상`,
       },
     ],
   },
   {
     id: 2,
-    title: "교사(校舍) 설치기준",
-    question:
-      "귀사는 사내대학원 설치기준 중 아래와 같은 교사(校舍) 설치기준을 만족하는 시설을 보유하고 계십니까?",
+    title: '교육프로그램',
+    question: '귀사는 첨단산업 분야에 적합한 교육프로그램을 운영하고 있습니까?',
     details: [
       {
-        title: "교사시설 구분",
-        subtitle: "｢평생교육법 시행령｣[별표5] '사내대학 교사의 구분' 준용",
-        items: [
-          {
-            category: "교육기본시설",
-            content:
-              "강의실(원격교육시설* 포함), 실험실습실, 교수연구실 및 그 부대시설",
-            note: "* ｢평생교육법 시행규칙｣제15조제2항 각호의 시설: ①100㎡ 이상의 원격교육 학사관리실 1실 이상 ②100㎡ 이상의 서버 및 통신장비 관리실 ③원격교육 운영을 위한 1대 이상의 서버와 네트워크 장비",
-          },
-          {
-            category: "지원시설",
-            content: "도서관, 학생복지시설, 행정실 및 그 부대시설",
-          },
-        ],
-      },
-      {
-        title: "학생 1인당 교사 기준면적",
-        subtitle: "｢평생교육법 시행령｣｢별표6｣'사내대학 교사의 기준면적' 준용",
-      },
-      {
-        title: "교사 면적 산출 기준",
-        items: [
-          {
-            content:
-              "편제 완성연도 기준 계열별 학생정원* × 학생 1명당 교사 기준면적 × 0.5",
-            note: "* 편제정원이 50명 미만인 경우 50명 기준으로 산출하며, 사내대학원은 첨단분야에 한해 설치되므로 계열은 자연과학·공학 계열에 한정",
-          },
-          {
-            content:
-              "원격교육시설을 갖춘 경우에는 교사 면적을 1/2까지 감축 가능",
-          },
-        ],
+        content: `- 첨단산업 분야에 적합한 교육프로그램을 운영`,
       },
     ],
   },
   {
     id: 3,
-    title: "교원확보 기준",
-    question:
-      "귀사는 사내대학원 설치기준 중 아래와 같은 교원확보 기준을 만족하십니까?",
+    title: '강의실 및 장비',
+    question: '귀사는 아래의 강의실 및 장비 기준을 충족합니까?',
     details: [
       {
-        title: "확보 시기",
-        content:
-          "개교 시 교원 정원의 2분의 1 이상을 반드시 확보, 나머지 교원은 개교 후 1년 이내에 확보",
+        content: `(강의실) 인재개발교육 및 인재혁신활동을 위한 50제곱미터 이상의 강의실 
+  * 강의실은 강의 전용공간 이외에도 회의실 등 병용공간도 강의실로 인정하되, 병용공간의 경우에도 인재개발교육 및 인재혁신활동을 위한 시설은 반드시 갖추어야 함
+  * 50제곱미터 이상에는 강의 전용공간뿐만 아니라 강사 사무실 등 공용공간도 포함 가능
+  * 강의실은 임차도 가능하며, 이 경우 인재혁신센터는 단기임차 여부, 지정기간 내 임차 지속 여부, 임차기간 연장 가능 여부 등 임차계약서 내용을 확인하여 강의실 임차계약 내용이 기업인재개발기관 활동에 적합하지 않을 경우 해당 기관에 보완 요청 실시`,
       },
       {
-        title: "교원 1인당 학생 수",
-        subtitle: "｢평생교육법 시행령｣[별표7] '사내대학의 교원산출기준' 준용",
+        content: `(장비) 교육실습에 필요한 장비`,
       },
       {
-        title: "교원 확보 산출 기준",
-        content: "편제정원* × 1.5배 ÷ 교원 1인당 학생 수",
-        note: "* 편제정원이 50명 미만인 경우 50명 기준으로 산출하며, 사내대학원은 첨단 분야에 한해 설치되므로 계열은 자연과학·공학 계열에 한정",
-        example: {
-          title:
-            "(예) 첨단산업 분야 사내대학원 석사 과정(2년)의 입학정원이 30명인 경우:",
-          steps: [
-            "편제정원 = 입학정원 30명 × 수업연한 2년 = 60명",
-            "교원 확보 수 = 편제정원 60명 × 1.5 ÷ 교원 1인당 학생 수 20명 = 4.5명(소수점 이하는 올림)",
-            "단, 박사학위 과정을 운영하는 경우 ｢첨단산업인재혁신법 시행령｣ 제8조제2항에 따라 7명 이상의 관련 분야 교원 확보 필요",
+        title: '기업 규모별 요구사항',
+        content: `다음 표는 기업 규모에 따른 인적요건, 물적요건, 교육요건을 보여줍니다.`,
+        table: {
+          headers: ['구분', '중소기업', '중견기업', '그 밖의 기업'],
+          rows: [
+            {
+              category: '인적요건',
+              subcategory: '전담인력',
+              small: '3명 이상',
+              medium: '7명 이상',
+              large: '10명 이상',
+            },
+            {
+              category: '물적요건',
+              subcategory: '강의실',
+              small: '-',
+              medium: '50m² 이상',
+              large: '-',
+            },
+            {
+              category: '물적요건',
+              subcategory: '장비',
+              small: '-',
+              medium: '교육실습에 필요한 장비',
+              large: '-',
+            },
+            {
+              category: '교육요건',
+              subcategory: '교육프로그램',
+              small: '-',
+              medium: '-',
+              large: '-',
+            },
           ],
         },
+        note: '강의실은 임차도 가능',
       },
     ],
   },
@@ -140,18 +112,16 @@ export default function Checklist() {
     setChecks(newChecks);
   };
 
-  const scrollToSection = (index) => {
+  const scrollToSection = index => {
     const element = document.getElementById(`section-${index}`);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = checklistData.map((_, index) =>
-        document.getElementById(`section-${index}`)
-      );
+      const sections = checklistData.map((_, index) => document.getElementById(`section-${index}`));
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -163,19 +133,20 @@ export default function Checklist() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const allConfirmed = checks.every((check) => check === true);
-  const completedCount = checks.filter((check) => check === true).length;
+  const allConfirmed = checks.every(check => check === true);
+  const completedCount = checks.filter(check => check === true).length;
   const progressPercentage = (completedCount / checklistData.length) * 100;
 
   const handleNext = () => {
     if (allConfirmed) {
-      navigate("/register");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      navigate('/register');
     } else {
-      alert("모든 항목을 확인으로 체크해 주세요.");
+      alert('모든 항목을 확인으로 체크해 주세요.');
     }
   };
 
@@ -185,11 +156,7 @@ export default function Checklist() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
+            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -198,12 +165,10 @@ export default function Checklist() {
             </svg>
             설립인가 신청 체크리스트
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            사내대학원 설립인가 신청 체크리스트
-          </h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">기업인재개발기관 신청 체크리스트</h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            사내대학원 설치를 위한 필수 요건들을 체크해보세요. 모든 항목을
-            만족해야 다음 단계로 진행할 수 있습니다.
+            기업인재개발기관 신청을 위한 필수 요건들을 체크해보세요. <br />
+            모든 항목을 만족해야 다음 단계로 진행할 수 있습니다.
           </p>
         </div>
 
@@ -224,10 +189,8 @@ export default function Checklist() {
             </div>
             <p className="text-xs text-gray-600 mb-3">
               {allConfirmed
-                ? "모든 항목을 완료했습니다! 🎉"
-                : `${
-                    checklistData.length - completedCount
-                  }개 항목이 남았습니다.`}
+                ? '모든 항목을 완료했습니다! 🎉'
+                : `${checklistData.length - completedCount}개 항목이 남았습니다.`}
             </p>
 
             {/* Progress Steps */}
@@ -237,29 +200,23 @@ export default function Checklist() {
                   key={item.id}
                   onClick={() => scrollToSection(index)}
                   className={`flex items-center text-xs w-full text-left p-2 rounded-lg transition-all hover:bg-gray-50 ${
-                    activeSection === index
-                      ? "bg-blue-50 border-l-2 border-blue-500"
-                      : ""
+                    activeSection === index ? 'bg-blue-50 border-l-2 border-blue-500' : ''
                   }`}
                 >
                   <div
                     className={`w-3 h-3 rounded-full mr-2 flex-shrink-0 ${
-                      checks[index] === true
-                        ? "bg-green-500"
-                        : checks[index] === false
-                        ? "bg-red-500"
-                        : "bg-gray-300"
+                      checks[index] === true ? 'bg-green-500' : checks[index] === false ? 'bg-red-500' : 'bg-gray-300'
                     }`}
                   ></div>
                   <span
                     className={`truncate ${
                       checks[index] === true
-                        ? "text-green-700 font-medium"
+                        ? 'text-green-700 font-medium'
                         : checks[index] === false
-                        ? "text-red-700"
-                        : activeSection === index
-                        ? "text-blue-700 font-medium"
-                        : "text-gray-600"
+                          ? 'text-red-700'
+                          : activeSection === index
+                            ? 'text-blue-700 font-medium'
+                            : 'text-gray-600'
                     }`}
                   >
                     {item.title}
@@ -286,7 +243,7 @@ export default function Checklist() {
           </div>
           <p className="text-sm text-gray-600">
             {allConfirmed
-              ? "모든 항목을 완료했습니다! 🎉"
+              ? '모든 항목을 완료했습니다! 🎉'
               : `${checklistData.length - completedCount}개 항목이 남았습니다.`}
           </p>
         </div>
@@ -299,84 +256,253 @@ export default function Checklist() {
               id={`section-${index}`}
               className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 ${
                 checks[index] === true
-                  ? "border-green-200 bg-green-50"
+                  ? 'border-green-200 bg-green-50'
                   : checks[index] === false
-                  ? "border-red-200 bg-red-50"
-                  : "border-gray-200 hover:border-blue-200"
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-gray-200 hover:border-blue-200'
               }`}
             >
               <div className="p-6">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-8">
                   <div className="flex-1">
-                    <div className="flex items-center mb-3">
+                    <div className="flex items-center mb-4">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mr-3 ${
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-4 shadow-lg transition-all duration-300 ${
                           checks[index] === true
-                            ? "bg-green-500"
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-600'
                             : checks[index] === false
-                            ? "bg-red-500"
-                            : "bg-gray-400"
+                              ? 'bg-gradient-to-r from-red-500 to-rose-600'
+                              : 'bg-gradient-to-r from-gray-400 to-gray-500'
                         }`}
                       >
-                        {checks[index] === true
-                          ? "✓"
-                          : checks[index] === false
-                          ? "✗"
-                          : index + 1}
+                        {checks[index] === true ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : checks[index] === false ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <span className="text-lg">{index + 1}</span>
+                        )}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {item.title}
-                      </h3>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{item.title}</h3>
+                        <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"></div>
+                      </div>
                     </div>
-                    <p className="text-gray-700 font-medium mb-4">
-                      {item.question}
-                    </p>
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100/50 mb-6">
+                      <div className="flex items-start">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-lg text-gray-800 font-semibold leading-relaxed">{item.question}</p>
+                      </div>
+                    </div>
                     {item.subtitle && (
-                      <p className="text-sm font-medium text-blue-700 bg-blue-50 p-3 rounded-lg mb-4">
-                        {item.subtitle}
-                      </p>
+                      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-4 mb-6">
+                        <div className="flex items-center">
+                          <div className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                          <p className="text-sm font-semibold text-amber-800">{item.subtitle}</p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {/* Details */}
-                <div className="space-y-4 mb-6">
+                <div className="space-y-6 mb-6">
                   {item.details.map((detail, detailIndex) => (
                     <div
                       key={detailIndex}
-                      className="border-l-4 border-blue-200 pl-4"
+                      className="bg-gradient-to-r from-blue-50/30 to-indigo-50/30 rounded-xl p-6 border border-blue-100/50"
                     >
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        {detail.title}
-                      </h4>
+                      {detail.title && (
+                        <div className="flex items-center mb-4">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                          <h4 className="text-lg font-bold text-gray-900">{detail.title}</h4>
+                        </div>
+                      )}
                       {detail.subtitle && (
-                        <p className="text-sm text-gray-600 mb-2">
-                          {detail.subtitle}
-                        </p>
+                        <div className="bg-blue-100/50 border-l-4 border-blue-400 p-4 rounded-r-lg mb-4">
+                          <p className="text-sm font-medium text-blue-800">{detail.subtitle}</p>
+                        </div>
                       )}
                       {detail.content && (
-                        <p className="text-gray-700 mb-2">{detail.content}</p>
+                        <div className="bg-white/70 backdrop-blur-sm rounded-lg p-5 border border-gray-200/50 shadow-sm">
+                          <div className="text-left">
+                            {detail.content.split('\n').map((line, lineIndex) => {
+                              if (line.trim().startsWith('*')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-3 text-left">
+                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-800 leading-relaxed font-medium text-left">
+                                      {line.replace('*', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim().startsWith('-')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-2 ml-4 text-left">
+                                    <div className="w-1 h-1 bg-gray-400 rounded-full mt-2.5 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-700 leading-relaxed text-left">
+                                      {line.replace('-', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim().startsWith('  *')) {
+                                return (
+                                  <div key={lineIndex} className="flex items-start mb-1 ml-8 text-left">
+                                    <div className="w-1 h-1 bg-gray-300 rounded-full mt-2.5 mr-3 flex-shrink-0"></div>
+                                    <p className="text-gray-600 leading-relaxed text-sm text-left">
+                                      {line.replace('  *', '').trim()}
+                                    </p>
+                                  </div>
+                                );
+                              } else if (line.trim()) {
+                                return (
+                                  <p
+                                    key={lineIndex}
+                                    className="text-gray-800 leading-relaxed mb-3 font-medium text-left"
+                                  >
+                                    {line.trim()}
+                                  </p>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
+                        </div>
                       )}
                       {detail.note && (
-                        <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">
-                          {detail.note}
-                        </p>
+                        <div className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+                          <div className="flex items-start">
+                            <div className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-amber-800 mb-1">참고사항</p>
+                              <p className="text-sm text-amber-700 leading-relaxed">{detail.note}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {detail.table && (
+                        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                          <div className="flex items-center mb-4">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <h5 className="text-lg font-bold text-blue-900">기업 규모별 요구사항</h5>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
+                              <thead>
+                                <tr className="bg-gradient-to-r from-blue-100 to-indigo-100">
+                                  {detail.table.headers.map((header, headerIndex) => (
+                                    <th
+                                      key={headerIndex}
+                                      className={`px-4 py-3 text-sm font-semibold text-gray-800 text-center border-r border-gray-200 last:border-r-0 ${
+                                        headerIndex === 0 ? 'text-left' : ''
+                                      }`}
+                                    >
+                                      {header}
+                                    </th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {detail.table.rows.map((row, rowIndex) => (
+                                  <tr
+                                    key={rowIndex}
+                                    className={`border-b border-gray-100 last:border-b-0 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}
+                                  >
+                                    <td className="px-4 py-3 text-sm font-medium text-gray-800 border-r border-gray-200">
+                                      <div>
+                                        <div className="font-semibold text-blue-800">{row.category}</div>
+                                        <div className="text-xs text-gray-600 mt-1">{row.subcategory}</div>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-700 text-center border-r border-gray-200">
+                                      {row.small}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-700 text-center border-r border-gray-200">
+                                      {row.medium}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-700 text-center">{row.large}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          {detail.note && (
+                            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-amber-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0">
+                                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                                <p className="text-sm text-amber-800 font-medium">{detail.note}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
                       {detail.items && (
-                        <div className="space-y-2 mt-2">
+                        <div className="mt-4 space-y-3">
                           {detail.items.map((subItem, subIndex) => (
-                            <div key={subIndex} className="ml-4">
+                            <div key={subIndex} className="bg-white/50 rounded-lg p-4 border border-gray-200/50">
                               {subItem.category && (
-                                <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
-                                  {subItem.category}
-                                </span>
+                                <div className="flex items-center mb-2">
+                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 mr-3">
+                                    {subItem.category}
+                                  </span>
+                                </div>
                               )}
-                              <span className="text-gray-700">
-                                {subItem.content}
-                              </span>
+                              <p className="text-gray-800 leading-relaxed">{subItem.content}</p>
                               {subItem.note && (
-                                <p className="text-xs text-gray-500 mt-1 ml-2">
+                                <p className="text-sm text-gray-600 mt-2 italic bg-gray-50 p-2 rounded">
                                   {subItem.note}
                                 </p>
                               )}
@@ -385,14 +511,24 @@ export default function Checklist() {
                         </div>
                       )}
                       {detail.example && (
-                        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                          <p className="text-sm font-medium text-amber-800 mb-2">
-                            {detail.example.title}
-                          </p>
-                          <ul className="text-sm text-amber-700 space-y-1">
+                        <div className="mt-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-5">
+                          <div className="flex items-center mb-3">
+                            <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center mr-3">
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <p className="text-sm font-bold text-emerald-800">{detail.example.title}</p>
+                          </div>
+                          <ul className="text-sm text-emerald-700 space-y-2">
                             {detail.example.steps.map((step, stepIndex) => (
-                              <li key={stepIndex} className="ml-2">
-                                • {step}
+                              <li key={stepIndex} className="flex items-start">
+                                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                <span className="leading-relaxed">{step}</span>
                               </li>
                             ))}
                           </ul>
@@ -407,8 +543,8 @@ export default function Checklist() {
                   <label
                     className={`flex items-center space-x-3 cursor-pointer p-4 rounded-lg transition-all ${
                       checks[index] === true
-                        ? "bg-green-100 border-2 border-green-300"
-                        : "hover:bg-green-50 border-2 border-transparent"
+                        ? 'bg-green-100 border-2 border-green-300'
+                        : 'hover:bg-green-50 border-2 border-transparent'
                     }`}
                   >
                     <input
@@ -419,11 +555,7 @@ export default function Checklist() {
                       className="w-5 h-5 text-green-600 focus:ring-green-500"
                     />
                     <span className="font-medium text-green-700">
-                      <svg
-                        className="w-5 h-5 inline mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                      <svg className="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -436,8 +568,8 @@ export default function Checklist() {
                   <label
                     className={`flex items-center space-x-3 cursor-pointer p-4 rounded-lg transition-all ${
                       checks[index] === false
-                        ? "bg-red-100 border-2 border-red-300"
-                        : "hover:bg-red-50 border-2 border-transparent"
+                        ? 'bg-red-100 border-2 border-red-300'
+                        : 'hover:bg-red-50 border-2 border-transparent'
                     }`}
                   >
                     <input
@@ -448,11 +580,7 @@ export default function Checklist() {
                       className="w-5 h-5 text-red-600 focus:ring-red-500"
                     />
                     <span className="font-medium text-red-700">
-                      <svg
-                        className="w-5 h-5 inline mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                      <svg className="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -469,15 +597,10 @@ export default function Checklist() {
         </div>
 
         {/* Final Message & Action */}
-           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
           <div className="mb-6">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -486,24 +609,17 @@ export default function Checklist() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              자격 확인 완료
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">자격 확인 완료</h3>
             <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            사내대학원 설치인가 신청을 위한 체크를 하시느라 수고 많으셨습니다.
-              귀사가 체크항목 중 4가지 모두에 해당되면 사내대학원 설치인가
-              신청이 가능하십니다.
+              기업인재개발기관 신청을 위한 체크를 하시느라 수고 많으셨습니다. 귀사가 체크항목 중 4가지 모두에 해당되면
+              기업인재개발기관 신청이 가능하십니다.
             </p>
           </div>
 
           {!allConfirmed && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-amber-600 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-5 h-5 text-amber-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -518,38 +634,26 @@ export default function Checklist() {
           )}
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            onClick={handleNext}
-            disabled={!allConfirmed}
-            className={`inline-flex items-center px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
-              allConfirmed
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {allConfirmed ? (
+            <button
+              onClick={handleNext}
+              disabled={!allConfirmed}
+              className={`inline-flex items-center px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
+                allConfirmed
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              {allConfirmed ? (
                 <>
                   자격 확인 후 등록 신청
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </>
               ) : (
-                "모든 항목을 확인해주세요"
+                '모든 항목을 확인해주세요'
               )}
-          </button>
-
-
+            </button>
           </div>
         </div>
       </div>

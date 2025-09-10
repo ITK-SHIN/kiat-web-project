@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export default function NotFound() {
   const navigate = useNavigate();
 
   const goHome = () => {
-    navigate("/");
+    navigate('/');
   };
 
   const goBack = () => {
@@ -23,26 +23,15 @@ export default function NotFound() {
 
         {/* Error Message */}
         <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            페이지를 찾을 수 없습니다
-          </h2>
-          <p className="text-lg text-gray-600 mb-2">
-            요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
-          </p>
-          <p className="text-md text-gray-500">
-            URL을 다시 확인해주시거나 홈페이지로 돌아가 주세요.
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">페이지를 찾을 수 없습니다</h2>
+          <p className="text-lg text-gray-600 mb-2">요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.</p>
+          <p className="text-md text-gray-500">URL을 다시 확인해주시거나 홈페이지로 돌아가 주세요.</p>
         </div>
 
         {/* Illustration */}
         <div className="mb-8">
           <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center opacity-20">
-            <svg
-              className="w-16 h-16 md:w-20 md:h-20 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-16 h-16 md:w-20 md:h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -59,12 +48,7 @@ export default function NotFound() {
             onClick={goHome}
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
           >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -79,18 +63,8 @@ export default function NotFound() {
             onClick={goBack}
             className="inline-flex items-center px-6 py-3 text-gray-600 font-medium border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-colors duration-200"
           >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             이전 페이지로
           </button>
@@ -98,42 +72,31 @@ export default function NotFound() {
 
         {/* Help Section */}
         <div className="mt-12 p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">
-            🔍 도움이 필요하신가요?
-          </h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">🔍 도움이 필요하신가요?</h3>
           <div className="grid md:grid-cols-2 gap-6 text-left">
             <div>
               <h4 className="font-semibold text-blue-700 mb-2">주요 페이지</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>
-                  <button
-                    onClick={() => navigate("/")}
-                    className="hover:text-blue-600 transition-colors"
-                  >
+                  <button onClick={() => navigate('/')} className="hover:text-blue-600 transition-colors">
                     • 홈페이지
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={() => navigate("/checklist")}
-                    className="hover:text-blue-600 transition-colors"
-                  >
+                  <button onClick={() => navigate('/checklist')} className="hover:text-blue-600 transition-colors">
                     • 기업인재개발기관 체크리스트
                   </button>
                 </li>
                 <li>
                   <button
-                    onClick={() => navigate("/person-checklist")}
+                    onClick={() => navigate('/person-checklist')}
                     className="hover:text-blue-600 transition-colors"
                   >
                     • 전문양성인 체크리스트
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={() => navigate("/steps")}
-                    className="hover:text-blue-600 transition-colors"
-                  >
+                  <button onClick={() => navigate('/steps')} className="hover:text-blue-600 transition-colors">
                     • 신규처리절차
                   </button>
                 </li>
@@ -143,12 +106,7 @@ export default function NotFound() {
               <h4 className="font-semibold text-blue-700 mb-2">문의사항</h4>
               <div className="text-sm text-gray-600 space-y-2">
                 <div className="flex items-center">
-                  <svg
-                    className="w-4 h-4 mr-2 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -159,12 +117,7 @@ export default function NotFound() {
                   <span>전화: 1379</span>
                 </div>
                 <div className="flex items-center">
-                  <svg
-                    className="w-4 h-4 mr-2 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -174,9 +127,7 @@ export default function NotFound() {
                   </svg>
                   <span>이메일: contact@kiat.or.kr</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  운영시간: 평일 09:00~18:00 (점심시간 12:00~13:00 제외)
-                </p>
+                <p className="text-xs text-gray-500 mt-2">운영시간: 평일 09:00~18:00 (점심시간 12:00~13:00 제외)</p>
               </div>
             </div>
           </div>
@@ -184,9 +135,7 @@ export default function NotFound() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            © 2024 한국산업기술진흥원(KIAT). All rights reserved.
-          </p>
+          <p className="text-sm text-gray-500">© 2024 한국산업기술진흥원(KIAT). All rights reserved.</p>
         </div>
       </div>
     </div>
