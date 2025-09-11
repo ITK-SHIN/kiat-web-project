@@ -624,7 +624,9 @@ export default function Register() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">기업인재개발기관 등록</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            사내대학원 설립을 위한 기관 정보를 단계별로 입력해주세요. 모든 정보는 안전하게 보호됩니다.
+            기업인재개발기관 지정 신청을 위한 기관 정보를 단계별로 입력해주세요.
+            <br />
+            모든 정보는 안전하게 보호됩니다.
           </p>
         </div>
 
@@ -892,7 +894,7 @@ export default function Register() {
                   />
 
                   <FormField
-                    label="개인정보 및 과세정보 제공활용동의서, 윤리청렴 및 보안서약서"
+                    label="개인정보&과세정보 제공활용동의서, 윤리청렴&보안서약서"
                     name="privacyConsent"
                     type="file"
                     onChange={handleInputChange}
