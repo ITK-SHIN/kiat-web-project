@@ -163,12 +163,20 @@ const FormField = ({
         />
       </div>
     ) : type === 'checkbox' ? (
-      <div>
+      <div
+        className={`p-4 rounded-lg border transition-all ${
+          error
+            ? 'border-red-300 bg-red-50'
+            : value && value.length > 0
+              ? 'border-gray-300 bg-gray-100'
+              : 'border-gray-200'
+        }`}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {options?.map(option => (
             <label
               key={option.value}
-              className="flex items-center space-x-3 cursor-pointer group p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+              className="flex items-center space-x-3 cursor-pointer group p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 bg-white"
             >
               <div className="relative">
                 <input
@@ -543,6 +551,12 @@ export default function Register() {
               if (formData.industryField?.includes('other') && !formData[field]?.trim()) {
                 newErrors[field] = rule.message;
               }
+            } else if (field === 'companyName') {
+              // 기업명의 경우 (주)만 있는 경우를 빈 값으로 처리
+              const companyName = formData[field]?.trim();
+              if (!companyName || companyName === '(주)') {
+                newErrors[field] = rule.message;
+              }
             } else {
               // 일반 텍스트 필드의 경우
               if (!formData[field]?.trim()) {
@@ -749,7 +763,8 @@ export default function Register() {
                       <h4 className="text-sm font-medium text-blue-800 mb-1">파일 첨부 안내</h4>
                       <p className="text-sm text-blue-700">
                         기업인재개발기관 등록을 위해 필요한 서류를 첨부해주세요. 파일은 PDF, DOC, DOCX, JPG, PNG 형식을
-                        지원합니다. (최대 10MB)
+                        지원합니다. <br />
+                        (최대 100MB)
                       </p>
                     </div>
                   </div>
@@ -1020,9 +1035,9 @@ export default function Register() {
                   <div>
                     <h4 className="text-sm font-medium text-gray-800 mb-2">법적 근거</h4>
                     <p className="text-sm text-gray-700 leading-relaxed">
-                      첨단산업 인재혁신 특별법 제10조제1항, 같은 법 시행령 제21조제3항 및 같은 법 시행규칙 제5조제1항에
+                      첨단산업 인재혁신 특별법 제5조제2항, 같은 법 시행령 제17조제2항 및 같은 법 시행규칙 제2조제1항에
                       따라
-                      <br /> 전문양성인 등록을 신청합니다.
+                      <br /> 기업인재개발기관등의 지정을 신청합니다.
                     </p>
                   </div>
                 </div>
