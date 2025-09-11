@@ -244,38 +244,38 @@ export default function IntroductionOverview() {
                   <table className="w-full">
                     <thead>
                       <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">구분</th>
+                        <th className="px-8 py-4 text-center text-sm font-semibold text-gray-900 w-28">구분</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">내용</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b border-gray-100">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50">목적</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50 w-28">목적</td>
                         <td className="px-6 py-4 text-sm text-gray-700 text-left">
                           첨단산업 분야의 기술 변화 및 경쟁 심화에 대응하여 관련 기업의 인재혁신 활동에 대해 효율적으로
                           지원·관리할 수 있도록 기업인재개발기관 지정
                         </td>
                       </tr>
                       <tr className="border-b border-gray-100">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50">추진내용</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50 w-28">추진내용</td>
                         <td className="px-6 py-4 text-sm text-gray-700 text-left">
                           제도 홍보, 신청 접수·검토, 심사위원회 구성·운영, 결과 보고, 지정기관 관리 (연중 기업 수요에
                           따라 공고 추진)
                         </td>
                       </tr>
                       <tr className="border-b border-gray-100">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50">절차</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50 w-28">절차</td>
                         <td className="px-6 py-4 text-sm text-gray-700 text-left">
                           신청 서류 검토 → 현장실사 → 종합심사(심사위원회) → 결과 보고 → 지정
                         </td>
                       </tr>
                       <tr className="border-b border-gray-100">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50">지정기준</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 bg-gray-50 w-28">지정기준</td>
                         <td className="px-6 py-4 text-sm text-gray-700 text-left">
                           <table className="w-full">
                             <tbody>
                               <tr className="border-b border-gray-200">
-                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-32 border-r border-gray-200 text-center">
+                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-28 border-r border-gray-200 text-center">
                                   지원·관리
                                   <br /> 전담인력
                                 </td>
@@ -292,7 +292,7 @@ export default function IntroductionOverview() {
                                 </td>
                               </tr>
                               <tr className="border-b border-gray-200">
-                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-32 border-r border-gray-200 text-center">
+                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-28 border-r border-gray-200 text-center">
                                   강의실
                                 </td>
                                 <td className="py-2 pl-4 text-sm text-gray-700 text-left">
@@ -305,7 +305,7 @@ export default function IntroductionOverview() {
                                 </td>
                               </tr>
                               <tr>
-                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-32 border-r border-gray-200 text-center">
+                                <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-28 border-r border-gray-200 text-center">
                                   기타
                                 </td>
                                 <td className="py-2 pl-4 text-sm text-gray-700 text-left">
@@ -577,7 +577,7 @@ export default function IntroductionOverview() {
                         <td className="px-6 py-4 text-sm text-gray-700 text-left">
                           <table className="w-full">
                             <tbody>
-                              <tr className="border-b border-gray-200">
+                              <tr className=" border-gray-200">
                                 <td className="py-2 pr-4 text-sm font-medium text-gray-900 w-32 border-r border-gray-200 text-center">
                                   교육시설·장비
                                 </td>

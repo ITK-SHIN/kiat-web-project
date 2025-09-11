@@ -340,4 +340,23 @@
     background-color: rgb(238 242 255);
     color: #6366f1;
   }
+
+  /* Date input custom styling */
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  input[type='date']::-webkit-inner-spin-button,
+  input[type='date']::-webkit-outer-spin-button {
+    display: none !important;
+  }
+
+  input[type='date'] {
+    background-image: none !important;
+  }
 }
