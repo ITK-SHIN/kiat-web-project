@@ -87,6 +87,7 @@ const FormField = ({
   multiple = false,
   formData = null,
   errors = null,
+  handleInputChange = null,
 }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -161,6 +162,36 @@ const FormField = ({
           className={`${getInputStyles(error, value)} rounded-l-none border-l-0`}
           placeholder="기업명을 입력해주세요"
         />
+      </div>
+    ) : type === 'address' ? (
+      <div className="space-y-3">
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            name={name}
+            value={value}
+            readOnly
+            className={`${getInputStyles(error, value)} bg-gray-50 cursor-pointer`}
+            placeholder="주소를 검색해주세요"
+            onClick={onChange}
+          />
+          <button
+            type="button"
+            onClick={onChange}
+            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 whitespace-nowrap"
+          >
+            주소 검색
+          </button>
+        </div>
+        <input
+          type="text"
+          name={`${name}Detail`}
+          value={formData?.[`${name}Detail`] || ''}
+          onChange={handleInputChange || onChange}
+          className={getInputStyles(errors?.[`${name}Detail`], formData?.[`${name}Detail`])}
+          placeholder="상세주소를 입력해주세요 (선택사항)"
+        />
+        {errors?.[`${name}Detail`] && <p className="mt-1 text-sm text-red-600">{errors[`${name}Detail`]}</p>}
       </div>
     ) : type === 'checkbox' ? (
       <div
@@ -422,6 +453,7 @@ export default function Register() {
     fax: '',
     email: '',
     officeAddress: '',
+    officeAddressDetail: '',
     industryField: [],
     industryFieldOther: '',
     // 파일 첨부
@@ -441,6 +473,61 @@ export default function Register() {
   });
 
   const [errors, setErrors] = useState({});
+
+  // 주소 검색 함수
+  const handleAddressSearch = useCallback(() => {
+    if (window.daum && window.daum.Postcode) {
+      new window.daum.Postcode({
+        oncomplete: function (data) {
+          // 우편번호와 주소 정보를 해당 필드에 넣는다.
+          let addr = '';
+          let extraAddr = '';
+
+          // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+          if (data.userSelectedType === 'R') {
+            // 사용자가 도로명 주소를 선택했을 경우
+            addr = data.roadAddress;
+          } else {
+            // 사용자가 지번 주소를 선택했을 경우(J)
+            addr = data.jibunAddress;
+          }
+
+          // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+          if (data.userSelectedType === 'R') {
+            // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+            // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+              extraAddr += data.bname;
+            }
+            // 건물명이 있고, 공동주택일 경우 추가한다.
+            if (data.buildingName !== '' && data.apartment === 'Y') {
+              extraAddr += extraAddr !== '' ? ', ' + data.buildingName : data.buildingName;
+            }
+            // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+            if (extraAddr !== '') {
+              extraAddr = ' (' + extraAddr + ')';
+            }
+          }
+
+          // 우편번호와 주소 정보를 폼 데이터에 설정
+          setFormData(prev => ({
+            ...prev,
+            officeAddress: addr + extraAddr,
+          }));
+
+          // 상세주소 입력 필드에 포커스
+          setTimeout(() => {
+            const detailInput = document.querySelector('input[name="officeAddressDetail"]');
+            if (detailInput) {
+              detailInput.focus();
+            }
+          }, 100);
+        },
+      }).open();
+    } else {
+      alert('주소 검색 서비스를 불러올 수 없습니다. 페이지를 새로고침해주세요.');
+    }
+  }, []);
 
   const handleInputChange = useCallback(
     e => {
@@ -726,10 +813,13 @@ export default function Register() {
                 <FormField
                   label="사무소 소재지"
                   name="officeAddress"
+                  type="address"
                   value={formData.officeAddress}
-                  onChange={handleInputChange}
+                  onChange={handleAddressSearch}
                   error={errors.officeAddress}
-                  placeholder="사무소 소재지를 입력해주세요"
+                  formData={formData}
+                  errors={errors}
+                  handleInputChange={handleInputChange}
                   required
                 />
 
