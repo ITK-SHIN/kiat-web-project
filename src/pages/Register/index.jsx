@@ -1,13 +1,64 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// CSS 스타일 추가
+const inputStyles = `
+  .date-input-fix {
+    position: relative;
+    isolation: isolate;
+  }
+  
+  /* 입사일자 필드 - 정상 작동 */
+  .join-date-input {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto !important;
+  }
+  
+  .join-date-input:focus {
+    z-index: 10;
+  }
+  
+  /* 모달 내 date input - 정상 작동 */
+  .modal-date-input {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto !important;
+  }
+  
+  .modal-date-input:focus {
+    z-index: 10;
+  }
+  
+  /* 테이블 내 다른 input 필드들 */
+  table input[type="text"],
+  table input[type="number"],
+  table select {
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* 다른 date input들에 대한 hover 방지 */
+  input[type="date"]:not(.join-date-input):not(.modal-date-input) {
+    position: relative;
+    z-index: 1;
+  }
+`;
+
 // 폼 섹션 데이터
 const formSections = [
   {
     id: 'applicant',
-    title: '신청인 정보',
+    title: '지정신청서',
     icon: '🏢',
     description: '신청인 및 기업 정보를 입력해주세요',
+  },
+  {
+    id: 'activity',
+    title: '첨단산업 인재혁신 활동 개요서',
+    icon: '📋',
+    description: '교육프로그램 및 인력 정보를 입력해주세요',
   },
   {
     id: 'file',
@@ -34,7 +85,7 @@ const getStepStyles = (index, currentStep) => {
 };
 
 const getStepTitleStyles = (index, currentStep) => {
-  const baseClasses = 'font-medium';
+  const baseClasses = 'font-bold';
 
   if (index === currentStep) {
     return cn(baseClasses, 'text-blue-700');
@@ -294,7 +345,7 @@ const ProgressSteps = ({ currentStep, sections }) => {
         ></div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col space-y-4">
         {sections.map((section, index) => (
           <div key={section.id} className={getStepStyles(index, currentStep)}>
             <div className="flex items-center space-x-3 mb-2">
@@ -402,10 +453,16 @@ const validationRules = {
     officeAddress: { required: true, message: '사무소 소재지를 입력해주세요' },
     industryField: { required: true, message: '첨단산업 분야를 하나 이상 선택해주세요' },
     industryFieldOther: { required: false, message: '기타 분야를 입력해주세요' },
+    applicationDate: { required: true, message: '신청일자를 입력해주세요' },
+    applicant: { required: true, message: '신청인을 입력해주세요' },
+  },
+  activity: {
+    programContent: { required: true, message: '교육프로그램 내용을 입력해주세요' },
+    personnel: { required: true, message: '전담인력과 강의인력 정보를 입력해주세요' },
+    equipment: { required: true, message: '교육장비 정보를 입력해주세요' },
+    activityFiles: { required: true, message: '필요한 첨부파일을 업로드해주세요' },
   },
   file: {
-    applicationForm: { required: true, message: '기업인재개발기관 지정신청서를 첨부해주세요' },
-    activityOverview: { required: true, message: '첨단산업 인재혁신 활동 개요서를 첨부해주세요' },
     smeConfirmation: { required: true, message: '중견기업 및 중소기업 확인서를 첨부해주세요' },
     corporateRegistration: { required: true, message: '법인등록 등기부등본을 첨부해주세요' },
     buildingRegistration: {
@@ -443,6 +500,8 @@ export default function Register() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isOverviewGuideOpen, setIsOverviewGuideOpen] = useState(false);
+  const [isPersonnelModalOpen, setIsPersonnelModalOpen] = useState(false);
+  const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     // 신청인 정보
     companyName: '(주)',
@@ -456,9 +515,19 @@ export default function Register() {
     officeAddressDetail: '',
     industryField: [],
     industryFieldOther: '',
+    // 신청 정보
+    applicationDate: new Date().toISOString().split('T')[0], // 오늘 날짜 자동 입력
+    applicant: '',
+    // 활동 개요서
+    programContent: '',
+    personnel: [],
+    equipment: [],
+    activityFiles: {
+      organizationChart: null,
+      trainingOrganization: null,
+      trainingFloorPlan: null,
+    },
     // 파일 첨부
-    applicationForm: null,
-    activityOverview: null,
     smeConfirmation: null,
     corporateRegistration: null,
     buildingRegistration: null,
@@ -617,7 +686,7 @@ export default function Register() {
   const validateStep = useCallback(
     step => {
       const newErrors = {};
-      const stepKey = ['applicant', 'file'][step];
+      const stepKey = ['applicant', 'activity', 'file'][step];
       const rules = validationRules[stepKey];
 
       Object.entries(rules).forEach(([field, rule]) => {
@@ -627,8 +696,48 @@ export default function Register() {
             if (!formData[field]) {
               newErrors[field] = rule.message;
             }
+          } else if (stepKey === 'activity') {
+            // activity 단계의 특별한 검증
+            if (field === 'programContent') {
+              if (!formData[field]?.trim()) {
+                newErrors[field] = rule.message;
+              }
+            } else if (field === 'personnel') {
+              // 인력 정보 검증
+              if (!formData.personnel || formData.personnel.length === 0) {
+                newErrors[field] = '최소 1명의 인력 정보를 입력해주세요';
+              } else {
+                // 각 인력의 필수 정보 검증
+                const hasIncompletePersonnel = formData.personnel.some(
+                  person => !person.type || !person.position?.trim() || !person.name?.trim()
+                );
+                if (hasIncompletePersonnel) {
+                  newErrors[field] = '모든 인력의 구분, 직위, 이름을 입력해주세요';
+                }
+              }
+            } else if (field === 'equipment') {
+              // 교육장비 정보 검증
+              if (!formData.equipment || formData.equipment.length === 0) {
+                newErrors[field] = '최소 1개의 교육장비 정보를 입력해주세요';
+              } else {
+                // 각 장비의 필수 정보 검증
+                const hasIncompleteEquipment = formData.equipment.some(
+                  item => !item.name?.trim() || !item.purpose?.trim()
+                );
+                if (hasIncompleteEquipment) {
+                  newErrors[field] = '모든 장비의 장비명과 용도를 입력해주세요';
+                }
+              }
+            } else if (field === 'activityFiles') {
+              // 첨부파일 검증
+              const requiredFiles = ['organizationChart', 'trainingOrganization', 'trainingFloorPlan'];
+              const missingFiles = requiredFiles.filter(fileType => !formData.activityFiles?.[fileType]);
+              if (missingFiles.length > 0) {
+                newErrors[field] = '기업의 조직도, 교육훈련기관 조직, 교육훈련부서 도면을 모두 첨부해주세요';
+              }
+            }
           } else {
-            // 첨단산업 분야 배열 검증
+            // applicant 단계의 검증
             if (field === 'industryField') {
               if (!formData[field] || formData[field].length === 0) {
                 newErrors[field] = rule.message;
@@ -698,494 +807,1563 @@ export default function Register() {
     navigate('/steps');
   }, [navigate]);
 
+  const handlePersonnelSave = useCallback(personnelData => {
+    // 항상 추가 모드로만 작동
+    const newPersonnel = {
+      id: Date.now(),
+      ...personnelData,
+    };
+    setFormData(prev => ({
+      ...prev,
+      personnel: [...prev.personnel, newPersonnel],
+    }));
+  }, []);
+
+  const handleEquipmentSave = useCallback(
+    equipmentData => {
+      // 항상 추가 모드로만 작동
+      const newEquipment = {
+        id: Date.now(),
+        order: formData.equipment.length + 1,
+        ...equipmentData,
+      };
+      setFormData(prev => ({
+        ...prev,
+        equipment: [...prev.equipment, newEquipment],
+      }));
+    },
+    [formData.equipment.length]
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container-max max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 2L3 7v11a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V7l-7-5z" clipRule="evenodd" />
-            </svg>
-            기관 등록 신청
+    <>
+      <style>{inputStyles}</style>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+        <div className="container-max max-w-4xl mx-auto px-4">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 2L3 7v11a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V7l-7-5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              기관 등록 신청
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">기업인재개발기관 등록</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              기업인재개발기관 지정 신청을 위한 기관 정보를 단계별로 입력해주세요.
+              <br />
+              모든 정보는 안전하게 보호됩니다.
+            </p>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">기업인재개발기관 등록</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            기업인재개발기관 지정 신청을 위한 기관 정보를 단계별로 입력해주세요.
-            <br />
-            모든 정보는 안전하게 보호됩니다.
-          </p>
-        </div>
 
-        {/* Progress Steps */}
-        <ProgressSteps currentStep={currentStep} sections={formSections} />
+          {/* Progress Steps */}
+          <ProgressSteps currentStep={currentStep} sections={formSections} />
 
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <div className="flex items-center space-x-3">
-              <span className="text-3xl">{formSections[currentStep].icon}</span>
-              <div>
-                <h3 className="text-white text-xl font-bold">{formSections[currentStep].title}</h3>
-                <p className="text-blue-100">{formSections[currentStep].description}</p>
+          {/* Form Card */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl">{formSections[currentStep].icon}</span>
+                <div>
+                  <h3 className="text-white text-xl font-bold">{formSections[currentStep].title}</h3>
+                  <p className="text-blue-100">{formSections[currentStep].description}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="p-8">
-            {/* Step 0: 신청인 정보 */}
-            {currentStep === 0 && (
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="p-8">
+              {/* Step 0: 신청인 정보 */}
+              {currentStep === 0 && (
+                <div className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      label="기업명"
+                      name="companyName"
+                      type="companyName"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      error={errors.companyName}
+                      placeholder="기업명을 입력해주세요"
+                      required
+                    />
+                    <FormField
+                      label="설립일"
+                      name="establishedDate"
+                      type="date"
+                      value={formData.establishedDate}
+                      onChange={handleInputChange}
+                      error={errors.establishedDate}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      label="대표자"
+                      name="representative"
+                      value={formData.representative}
+                      onChange={handleInputChange}
+                      error={errors.representative}
+                      placeholder="대표자명을 입력해주세요"
+                      required
+                    />
+                    <FormField
+                      label="사업자등록번호(법인등록번호)"
+                      name="businessNumber"
+                      value={formData.businessNumber}
+                      onChange={handleInputChange}
+                      error={errors.businessNumber}
+                      placeholder="000-00-00000"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      label="전화번호"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      error={errors.phone}
+                      placeholder="02-1234-5678"
+                      required
+                    />
+                    <FormField
+                      label="팩스"
+                      name="fax"
+                      value={formData.fax}
+                      onChange={handleInputChange}
+                      error={errors.fax}
+                      placeholder="02-1234-5679"
+                    />
+                  </div>
+
                   <FormField
-                    label="기업명"
-                    name="companyName"
-                    type="companyName"
-                    value={formData.companyName}
+                    label="전자우편"
+                    name="email"
+                    type="email"
+                    value={formData.email}
                     onChange={handleInputChange}
-                    error={errors.companyName}
-                    placeholder="기업명을 입력해주세요"
+                    error={errors.email}
+                    placeholder="example@company.com"
                     required
                   />
+
                   <FormField
-                    label="설립일"
-                    name="establishedDate"
-                    type="date"
-                    value={formData.establishedDate}
-                    onChange={handleInputChange}
-                    error={errors.establishedDate}
+                    label="사무소 소재지"
+                    name="officeAddress"
+                    type="address"
+                    value={formData.officeAddress}
+                    onChange={handleAddressSearch}
+                    error={errors.officeAddress}
+                    formData={formData}
+                    errors={errors}
+                    handleInputChange={handleInputChange}
                     required
                   />
+
+                  <FormField
+                    label="첨단산업 분야"
+                    name="industryField"
+                    type="checkbox"
+                    value={formData.industryField}
+                    onChange={handleInputChange}
+                    error={errors.industryField}
+                    options={industryFieldOptions}
+                    formData={formData}
+                    errors={errors}
+                    required
+                  />
+
+                  {/* 법적 근거 텍스트 */}
+                  <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      「첨단산업 인재혁신 특별법」 제5조제2항, 같은 법 시행령 제17조제2항 및 같은 법 시행규칙
+                      제2조제1항에 따라
+                    </p>
+                    <p className="text-sm text-gray-700 leading-relaxed">기업인재개발기관등의 지정을 신청합니다.</p>
+                  </div>
+
+                  {/* 신청일자 및 신청인 */}
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      label="신청일자"
+                      name="applicationDate"
+                      type="date"
+                      value={formData.applicationDate}
+                      onChange={handleInputChange}
+                      error={errors.applicationDate}
+                      required
+                    />
+
+                    <FormField
+                      label="신청인"
+                      name="applicant"
+                      type="text"
+                      value={formData.applicant}
+                      onChange={handleInputChange}
+                      error={errors.applicant}
+                      placeholder="신청인명을 입력해주세요"
+                      required
+                    />
+                  </div>
                 </div>
+              )}
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    label="대표자"
-                    name="representative"
-                    value={formData.representative}
-                    onChange={handleInputChange}
-                    error={errors.representative}
-                    placeholder="대표자명을 입력해주세요"
-                    required
-                  />
-                  <FormField
-                    label="사업자등록번호(법인등록번호)"
-                    name="businessNumber"
-                    value={formData.businessNumber}
-                    onChange={handleInputChange}
-                    error={errors.businessNumber}
-                    placeholder="000-00-00000"
-                    required
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    label="전화번호"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    error={errors.phone}
-                    placeholder="02-1234-5678"
-                    required
-                  />
-                  <FormField
-                    label="팩스"
-                    name="fax"
-                    value={formData.fax}
-                    onChange={handleInputChange}
-                    error={errors.fax}
-                    placeholder="02-1234-5679"
-                  />
-                </div>
-
-                <FormField
-                  label="전자우편"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  error={errors.email}
-                  placeholder="example@company.com"
-                  required
-                />
-
-                <FormField
-                  label="사무소 소재지"
-                  name="officeAddress"
-                  type="address"
-                  value={formData.officeAddress}
-                  onChange={handleAddressSearch}
-                  error={errors.officeAddress}
-                  formData={formData}
-                  errors={errors}
-                  handleInputChange={handleInputChange}
-                  required
-                />
-
-                <FormField
-                  label="첨단산업 분야"
-                  name="industryField"
-                  type="checkbox"
-                  value={formData.industryField}
-                  onChange={handleInputChange}
-                  error={errors.industryField}
-                  options={industryFieldOptions}
-                  formData={formData}
-                  errors={errors}
-                  required
-                />
-              </div>
-            )}
-
-            {/* Step 1: 파일 첨부 */}
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <div className="flex items-start space-x-3">
-                    <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              {/* Step 1: 첨단산업 인재혁신 활동 개요서 */}
+              {currentStep === 1 && (
+                <div className="space-y-8">
+                  {/* 교육프로그램 내용 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">교육프로그램 내용</h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      <textarea
+                        className={getInputStyles(errors.programContent, formData.programContent)}
+                        placeholder="내용 입력"
+                        value={formData.programContent}
+                        onChange={e => setFormData(prev => ({ ...prev, programContent: e.target.value }))}
+                        rows={4}
                       />
-                    </svg>
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-800 mb-1">파일 첨부 안내</h4>
-                      <p className="text-sm text-blue-700">
-                        기업인재개발기관 등록을 위해 필요한 서류를 첨부해주세요. 파일은 PDF, DOC, DOCX, JPG, PNG 형식을
-                        지원합니다. <br />
-                        (최대 100MB)
+                      {errors.programContent && <p className="mt-1 text-sm text-red-600">{errors.programContent}</p>}
+                    </div>
+                  </div>
+
+                  {/* 전담인력과 강의인력 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">전담인력과 강의인력</h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      {errors.personnel && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-600 flex items-center">
+                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            {errors.personnel}
+                          </p>
+                        </div>
+                      )}
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse border border-gray-300" style={{ minWidth: '1400px' }}>
+                          <thead>
+                            <tr className="bg-blue-50">
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '100px' }}
+                              >
+                                구분
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '120px' }}
+                              >
+                                직위
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '120px' }}
+                              >
+                                이름
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '130px' }}
+                              >
+                                생년월일
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '150px' }}
+                              >
+                                최종학교
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '100px' }}
+                              >
+                                학위
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '120px' }}
+                              >
+                                전문분야
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '130px' }}
+                              >
+                                입사일자
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '100px' }}
+                              >
+                                삭제
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {formData.personnel.length === 0 ? (
+                              <tr>
+                                <td colSpan="8" className="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                                  등록된 인력이 없습니다. "인력 추가" 버튼을 클릭하여 인력을 추가해주세요.
+                                </td>
+                              </tr>
+                            ) : (
+                              formData.personnel.map(person => (
+                                <tr key={person.id}>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <select
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white focus:outline-none"
+                                      value={person.type}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, type: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                    >
+                                      <option value="강의">강의</option>
+                                      <option value="전담">전담</option>
+                                    </select>
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.position}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, position: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="직위"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.name}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, name: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="이름"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.birthDate}
+                                      onChange={e => {
+                                        // 숫자만 허용
+                                        const value = e.target.value.replace(/[^0-9]/g, '');
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, birthDate: value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onKeyPress={e => {
+                                        // 숫자가 아닌 키는 입력 차단
+                                        if (
+                                          !/[0-9]/.test(e.key) &&
+                                          !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(
+                                            e.key
+                                          )
+                                        ) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="YYYYMMDD"
+                                      maxLength={8}
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.school}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, school: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="학교명"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.degree}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, degree: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="학위"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none"
+                                      value={person.specialty}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.map(p =>
+                                            p.id === person.id ? { ...p, specialty: e.target.value } : p
+                                          ),
+                                        }));
+                                      }}
+                                      onBlur={e => e.target.blur()}
+                                      onMouseLeave={e => {
+                                        setTimeout(() => {
+                                          if (document.activeElement === e.target) {
+                                            e.target.blur();
+                                          }
+                                        }, 100);
+                                      }}
+                                      placeholder="전문분야"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <div className="date-input-fix">
+                                      <input
+                                        type="date"
+                                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all focus:outline-none join-date-input"
+                                        value={person.joinDate}
+                                        onChange={e => {
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            personnel: prev.personnel.map(p =>
+                                              p.id === person.id ? { ...p, joinDate: e.target.value } : p
+                                            ),
+                                          }));
+                                        }}
+                                      />
+                                    </div>
+                                  </td>
+                                  <td className="border border-gray-300 px-4 py-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          personnel: prev.personnel.filter(p => p.id !== person.id),
+                                        }));
+                                      }}
+                                      className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                                    >
+                                      삭제
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="mt-4 flex justify-between">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsPersonnelModalOpen(true);
+                          }}
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                        >
+                          인력 추가
+                        </button>
+                        <div className="flex space-x-4 text-sm">
+                          <span>전담인력: {formData.personnel.filter(p => p.type === '전담').length}</span>
+                          <span>강의인력: {formData.personnel.filter(p => p.type === '강의').length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 교육장비 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">교육장비</h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      {errors.equipment && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-600 flex items-center">
+                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            {errors.equipment}
+                          </p>
+                        </div>
+                      )}
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse border border-gray-300" style={{ minWidth: '800px' }}>
+                          <thead>
+                            <tr className="bg-blue-50">
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '80px' }}
+                              >
+                                No.
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '150px' }}
+                              >
+                                장비명
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '200px' }}
+                              >
+                                용도
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '100px' }}
+                              >
+                                수량
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '150px' }}
+                              >
+                                비고
+                              </th>
+                              <th
+                                className="border border-gray-300 px-4 py-3 text-left font-medium text-gray-900"
+                                style={{ width: '100px' }}
+                              >
+                                삭제
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {formData.equipment.length === 0 ? (
+                              <tr>
+                                <td colSpan="6" className="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                                  등록된 교육장비가 없습니다. "장비 추가" 버튼을 클릭하여 장비를 추가해주세요.
+                                </td>
+                              </tr>
+                            ) : (
+                              formData.equipment.map(item => (
+                                <tr key={item.id}>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="number"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                      value={item.order}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.map(eq =>
+                                            eq.id === item.id ? { ...eq, order: parseInt(e.target.value) } : eq
+                                          ),
+                                        }));
+                                      }}
+                                      min="1"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                      value={item.name}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.map(eq =>
+                                            eq.id === item.id ? { ...eq, name: e.target.value } : eq
+                                          ),
+                                        }));
+                                      }}
+                                      placeholder="장비명"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                      value={item.purpose}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.map(eq =>
+                                            eq.id === item.id ? { ...eq, purpose: e.target.value } : eq
+                                          ),
+                                        }));
+                                      }}
+                                      placeholder="용도"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                      value={item.quantity}
+                                      onChange={e => {
+                                        const value = e.target.value.replace(/[^0-9]/g, '');
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.map(eq =>
+                                            eq.id === item.id ? { ...eq, quantity: value } : eq
+                                          ),
+                                        }));
+                                      }}
+                                      onKeyPress={e => {
+                                        if (!/[0-9]/.test(e.key)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      placeholder="수량"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-3 py-4">
+                                    <input
+                                      type="text"
+                                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                      value={item.remarks}
+                                      onChange={e => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.map(eq =>
+                                            eq.id === item.id ? { ...eq, remarks: e.target.value } : eq
+                                          ),
+                                        }));
+                                      }}
+                                      placeholder="비고"
+                                    />
+                                  </td>
+                                  <td className="border border-gray-300 px-4 py-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          equipment: prev.equipment.filter(eq => eq.id !== item.id),
+                                        }));
+                                      }}
+                                      className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                                    >
+                                      삭제
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="mt-4 flex justify-between">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsEquipmentModalOpen(true);
+                          }}
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                        >
+                          장비 추가
+                        </button>
+                        <div className="flex space-x-4 text-sm">
+                          <span>총 장비: {formData.equipment.length}개</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 첨부파일 섹션들 */}
+                  {errors.activityFiles && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-sm text-red-600 flex items-center">
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {errors.activityFiles}
                       </p>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">기업의 조직도 (첨부)</h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      <div className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                          onChange={e => {
+                            setFormData(prev => ({
+                              ...prev,
+                              activityFiles: {
+                                ...prev.activityFiles,
+                                organizationChart: e.target.files[0],
+                              },
+                            }));
+                          }}
+                          className="hidden"
+                          id="organizationChart"
+                        />
+                        <label htmlFor="organizationChart" className="cursor-pointer block text-center py-4">
+                          {formData.activityFiles.organizationChart ? (
+                            <span className="text-green-600">✓ {formData.activityFiles.organizationChart.name}</span>
+                          ) : (
+                            <span className="text-gray-500">파일을 선택하거나 드래그하여 업로드하세요</span>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">기업부설 교육훈련기관 조직 (첨부)</h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      <div className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                          onChange={e => {
+                            setFormData(prev => ({
+                              ...prev,
+                              activityFiles: {
+                                ...prev.activityFiles,
+                                trainingOrganization: e.target.files[0],
+                              },
+                            }));
+                          }}
+                          className="hidden"
+                          id="trainingOrganization"
+                        />
+                        <label htmlFor="trainingOrganization" className="cursor-pointer block text-center py-4">
+                          {formData.activityFiles.trainingOrganization ? (
+                            <span className="text-green-600">✓ {formData.activityFiles.trainingOrganization.name}</span>
+                          ) : (
+                            <span className="text-gray-500">파일을 선택하거나 드래그하여 업로드하세요</span>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div className="lg:col-span-1">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        교육훈련부서 전체 도면 및 내부 도면 (첨부)
+                      </h3>
+                    </div>
+                    <div className="lg:col-span-3">
+                      <div className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                          onChange={e => {
+                            setFormData(prev => ({
+                              ...prev,
+                              activityFiles: {
+                                ...prev.activityFiles,
+                                trainingFloorPlan: e.target.files[0],
+                              },
+                            }));
+                          }}
+                          className="hidden"
+                          id="trainingFloorPlan"
+                        />
+                        <label htmlFor="trainingFloorPlan" className="cursor-pointer block text-center py-4">
+                          {formData.activityFiles.trainingFloorPlan ? (
+                            <span className="text-green-600">✓ {formData.activityFiles.trainingFloorPlan.name}</span>
+                          ) : (
+                            <span className="text-gray-500">파일을 선택하거나 드래그하여 업로드하세요</span>
+                          )}
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* 개요서 포함 내용 안내 (토글 가능) */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <button
-                    type="button"
-                    onClick={() => setIsOverviewGuideOpen(!isOverviewGuideOpen)}
-                    className="w-full flex items-center justify-between text-left"
-                  >
-                    <div>
-                      <p className="text-sm text-blue-800 font-medium">* 첨단산업 인재혁신 활동 개요서 포함 내용</p>
-                      <p className="text-xs text-blue-600 mt-1">클릭하여 상세 내용 확인</p>
+              {/* Step 2: 파일 첨부 */}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <svg
+                        className="w-5 h-5 text-blue-600 mt-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-800 mb-1">파일 첨부 안내</h4>
+                        <p className="text-sm text-blue-700">
+                          기업인재개발기관 등록을 위해 필요한 서류를 첨부해주세요. 파일은 PDF, DOC, DOCX, JPG, PNG
+                          형식을 지원합니다. <br />
+                          (최대 100MB)
+                        </p>
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      label="중견기업 및 중소기업 확인서"
+                      name="smeConfirmation"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.smeConfirmation}
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      required
+                    />
+
+                    <FormField
+                      label="법인등록 등기부등본"
+                      name="corporateRegistration"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.corporateRegistration}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      required
+                    />
+
+                    <FormField
+                      label="강의실이 포함된 건물의 등기부 등본 또는 임대차 계약서"
+                      name="buildingRegistration"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.buildingRegistration}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      required
+                    />
+
+                    <FormField
+                      label="사업자등록증 사본"
+                      name="businessLicense"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.businessLicense}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      required
+                    />
+
+                    <FormField
+                      label="회계감사보고서 또는 결산재무제표(최근 3개년)"
+                      name="auditReport"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.auditReport}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx"
+                      required
+                    />
+
+                    <FormField
+                      label="최근 3년 간 실적증명원"
+                      name="performanceCertificate"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.performanceCertificate}
+                      accept=".pdf,.doc,.docx"
+                      required
+                    />
+
+                    <FormField
+                      label="개인정보&과세정보 제공활용동의서, 윤리청렴&보안서약서"
+                      name="privacyConsent"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.privacyConsent}
+                      accept=".pdf,.doc,.docx"
+                      required
+                    />
+
+                    <FormField
+                      label="신청기관 대표의 참여의사 확인서"
+                      name="participationConfirmation"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.participationConfirmation}
+                      accept=".pdf,.doc,.docx"
+                      required
+                    />
+
+                    <FormField
+                      label="전담인력과 강의인력 이력서 및 경력증명서"
+                      name="personnelResume"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.personnelResume}
+                      accept=".pdf,.doc,.docx"
+                      required
+                    />
+
+                    <FormField
+                      label="안전관리형 과제 자가점검표"
+                      name="safetyChecklist"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.safetyChecklist}
+                      accept=".pdf,.doc,.docx"
+                      required
+                    />
+
+                    <FormField
+                      label="공동운영협약서 (2개 이상의 기업이 공동운영하는 경우)"
+                      name="cooperationAgreement"
+                      type="file"
+                      onChange={handleInputChange}
+                      error={errors.cooperationAgreement}
+                      accept=".pdf,.doc,.docx"
+                    />
+                  </div>
+
+                  {/* 첨부된 파일 목록 표시 */}
+                  <div className="mt-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">첨부된 파일</h4>
+                    <div className="space-y-2">
+                      {Object.entries(formData).map(([key, file]) => {
+                        if (
+                          key.startsWith('applicationForm') ||
+                          key.startsWith('activityOverview') ||
+                          key.startsWith('smeConfirmation') ||
+                          key.startsWith('corporateRegistration') ||
+                          key.startsWith('buildingRegistration') ||
+                          key.startsWith('businessLicense') ||
+                          key.startsWith('auditReport') ||
+                          key.startsWith('performanceCertificate') ||
+                          key.startsWith('privacyConsent') ||
+                          key.startsWith('participationConfirmation') ||
+                          key.startsWith('personnelResume') ||
+                          key.startsWith('safetyChecklist') ||
+                          key.startsWith('cooperationAgreement')
+                        ) {
+                          if (file) {
+                            const fieldLabels = {
+                              applicationForm: '기업인재개발기관 지정신청서',
+                              activityOverview: '첨단산업 인재혁신 활동 개요서',
+                              smeConfirmation: '중견기업 및 중소기업 확인서',
+                              corporateRegistration: '법인등록 등기부등본',
+                              buildingRegistration: '강의실이 포함된 건물의 등기부 등본 또는 임대차 계약서',
+                              businessLicense: '사업자등록증 사본',
+                              auditReport: '회계감사보고서 또는 결산재무제표',
+                              performanceCertificate: '최근 3년 간 실적증명원',
+                              privacyConsent: '개인정보 및 과세정보 제공활용동의서, 윤리청렴 및 보안서약서',
+                              participationConfirmation: '신청기관 대표의 참여의사 확인서',
+                              personnelResume: '전담인력과 강의인력 이력서 및 경력증명서',
+                              safetyChecklist: '안전관리형 과제 자가점검표',
+                              cooperationAgreement: '공동운영협약서',
+                            };
+
+                            return (
+                              <div
+                                key={key}
+                                className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <svg
+                                    className="w-4 h-4 text-gray-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                  </svg>
+                                  <span className="text-sm text-gray-700">
+                                    {fieldLabels[key]}: {file.name}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                              </div>
+                            );
+                          }
+                        }
+                        return null;
+                      })}
+                      {Object.values(formData).filter(file => file && typeof file === 'object' && file.name).length ===
+                        0 && <p className="text-sm text-gray-500 italic">첨부된 파일이 없습니다.</p>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 법적 근거 안내 */}
+              {currentStep === formSections.length - 1 && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 mt-6">
+                  <div className="flex items-start space-x-3">
                     <svg
-                      className={`w-5 h-5 text-blue-600 transition-transform duration-200 ${
-                        isOverviewGuideOpen ? 'rotate-180' : ''
-                      }`}
+                      className="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
-                  </button>
-
-                  {isOverviewGuideOpen && (
-                    <div className="mt-4 pt-4 border-t border-blue-200">
-                      <div className="text-sm text-blue-700 space-y-2 text-left">
-                        <p>❶ 교육프로그램 내용</p>
-                        <p>❷ 전담인력과 강의인력 보유 현황</p>
-                        <p>❸ 교육 실습에 필요한 장비 보유 현황</p>
-                        <p>❹ 기업의 조직도</p>
-                        <p>❺ 기업부설 교육훈련기관 또는 기업의 교육훈련부서의 조직도</p>
-                        <p>
-                          ❻ 기업부설 교육훈련기관 또는 기업의 교육훈련부서가 위치한 건물 또는 층의 전체 도면 및 내부
-                          도면(전용 출입구 현판 및 내부사진 포함)
-                        </p>
-                      </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-800 mb-2">법적 근거</h4>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        첨단산업 인재혁신 특별법 제5조제2항, 같은 법 시행령 제17조제2항 및 같은 법 시행규칙 제2조제1항에
+                        따라
+                        <br /> 기업인재개발기관등의 지정을 신청합니다.
+                      </p>
                     </div>
-                  )}
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    label="기업인재개발기관 지정신청서"
-                    name="applicationForm"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.applicationForm}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="첨단산업 인재혁신 활동 개요서"
-                    name="activityOverview"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.activityOverview}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="중견기업 및 중소기업 확인서"
-                    name="smeConfirmation"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.smeConfirmation}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    required
-                  />
-
-                  <FormField
-                    label="법인등록 등기부등본"
-                    name="corporateRegistration"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.corporateRegistration}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    required
-                  />
-
-                  <FormField
-                    label="강의실이 포함된 건물의 등기부 등본 또는 임대차 계약서"
-                    name="buildingRegistration"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.buildingRegistration}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    required
-                  />
-
-                  <FormField
-                    label="사업자등록증 사본"
-                    name="businessLicense"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.businessLicense}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    required
-                  />
-
-                  <FormField
-                    label="회계감사보고서 또는 결산재무제표(최근 3개년)"
-                    name="auditReport"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.auditReport}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                    required
-                  />
-
-                  <FormField
-                    label="최근 3년 간 실적증명원"
-                    name="performanceCertificate"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.performanceCertificate}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="개인정보&과세정보 제공활용동의서, 윤리청렴&보안서약서"
-                    name="privacyConsent"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.privacyConsent}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="신청기관 대표의 참여의사 확인서"
-                    name="participationConfirmation"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.participationConfirmation}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="전담인력과 강의인력 이력서 및 경력증명서"
-                    name="personnelResume"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.personnelResume}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="안전관리형 과제 자가점검표"
-                    name="safetyChecklist"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.safetyChecklist}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="공동운영협약서 (2개 이상의 기업이 공동운영하는 경우)"
-                    name="cooperationAgreement"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.cooperationAgreement}
-                    accept=".pdf,.doc,.docx"
-                  />
-                </div>
-
-                {/* 첨부된 파일 목록 표시 */}
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">첨부된 파일</h4>
-                  <div className="space-y-2">
-                    {Object.entries(formData).map(([key, file]) => {
-                      if (
-                        key.startsWith('applicationForm') ||
-                        key.startsWith('activityOverview') ||
-                        key.startsWith('smeConfirmation') ||
-                        key.startsWith('corporateRegistration') ||
-                        key.startsWith('buildingRegistration') ||
-                        key.startsWith('businessLicense') ||
-                        key.startsWith('auditReport') ||
-                        key.startsWith('performanceCertificate') ||
-                        key.startsWith('privacyConsent') ||
-                        key.startsWith('participationConfirmation') ||
-                        key.startsWith('personnelResume') ||
-                        key.startsWith('safetyChecklist') ||
-                        key.startsWith('cooperationAgreement')
-                      ) {
-                        if (file) {
-                          const fieldLabels = {
-                            applicationForm: '기업인재개발기관 지정신청서',
-                            activityOverview: '첨단산업 인재혁신 활동 개요서',
-                            smeConfirmation: '중견기업 및 중소기업 확인서',
-                            corporateRegistration: '법인등록 등기부등본',
-                            buildingRegistration: '강의실이 포함된 건물의 등기부 등본 또는 임대차 계약서',
-                            businessLicense: '사업자등록증 사본',
-                            auditReport: '회계감사보고서 또는 결산재무제표',
-                            performanceCertificate: '최근 3년 간 실적증명원',
-                            privacyConsent: '개인정보 및 과세정보 제공활용동의서, 윤리청렴 및 보안서약서',
-                            participationConfirmation: '신청기관 대표의 참여의사 확인서',
-                            personnelResume: '전담인력과 강의인력 이력서 및 경력증명서',
-                            safetyChecklist: '안전관리형 과제 자가점검표',
-                            cooperationAgreement: '공동운영협약서',
-                          };
-
-                          return (
-                            <div
-                              key={key}
-                              className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <svg
-                                  className="w-4 h-4 text-gray-500"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                  />
-                                </svg>
-                                <span className="text-sm text-gray-700">
-                                  {fieldLabels[key]}: {file.name}
-                                </span>
-                              </div>
-                              <span className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                            </div>
-                          );
-                        }
-                      }
-                      return null;
-                    })}
-                    {Object.values(formData).filter(file => file && typeof file === 'object' && file.name).length ===
-                      0 && <p className="text-sm text-gray-500 italic">첨부된 파일이 없습니다.</p>}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* 법적 근거 안내 */}
-            {currentStep === formSections.length - 1 && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 mt-6">
-                <div className="flex items-start space-x-3">
-                  <svg
-                    className="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+              {/* Navigation Buttons */}
+              <NavigationButtons
+                currentStep={currentStep}
+                totalSteps={formSections.length}
+                onPrev={handlePrev}
+                onNext={handleNext}
+                onSubmit={handleSubmit}
+                onHome={handleHome}
+              />
+            </form>
+          </div>
+
+          {/* Help Section */}
+          <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+            <div className="text-center">
+              <h4 className="text-lg font-bold text-gray-900 mb-2">도움이 필요하시나요?</h4>
+              <p className="text-gray-600 mb-4">등록 과정에서 궁금한 사항이 있으시면 언제든지 연락주세요.</p>
+              <div className="flex justify-center items-center space-x-6">
+                <div className="flex items-center space-x-2 text-blue-700">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                     />
                   </svg>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-800 mb-2">법적 근거</h4>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      첨단산업 인재혁신 특별법 제5조제2항, 같은 법 시행령 제17조제2항 및 같은 법 시행규칙 제2조제1항에
-                      따라
-                      <br /> 기업인재개발기관등의 지정을 신청합니다.
-                    </p>
-                  </div>
+                  <span className="font-medium text-sm">1379 → 3번</span>
                 </div>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            <NavigationButtons
-              currentStep={currentStep}
-              totalSteps={formSections.length}
-              onPrev={handlePrev}
-              onNext={handleNext}
-              onSubmit={handleSubmit}
-              onHome={handleHome}
-            />
-          </form>
-        </div>
-
-        {/* Help Section */}
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-          <div className="text-center">
-            <h4 className="text-lg font-bold text-gray-900 mb-2">도움이 필요하시나요?</h4>
-            <p className="text-gray-600 mb-4">등록 과정에서 궁금한 사항이 있으시면 언제든지 연락주세요.</p>
-            <div className="flex justify-center items-center space-x-6">
-              <div className="flex items-center space-x-2 text-blue-700">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-                <span className="font-medium text-sm">1379 → 3번</span>
-              </div>
-              <div className="text-gray-400">|</div>
-              <div className="flex items-center space-x-2 text-blue-700">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                <span className="font-medium text-sm">온라인 문의</span>
+                <div className="text-gray-400">|</div>
+                <div className="flex items-center space-x-2 text-blue-700">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span className="font-medium text-sm">온라인 문의</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Required Fields Notice */}
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-500">
-            <span className="text-red-500">*</span> 표시된 항목은 필수 입력 사항입니다
-          </p>
+          {/* Required Fields Notice */}
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-500">
+              <span className="text-red-500">*</span> 표시된 항목은 필수 입력 사항입니다
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 인력 추가 모달 */}
+      {isPersonnelModalOpen && (
+        <PersonnelModal
+          isOpen={isPersonnelModalOpen}
+          onClose={() => {
+            setIsPersonnelModalOpen(false);
+          }}
+          onSave={handlePersonnelSave}
+        />
+      )}
+
+      {/* 장비 추가 모달 */}
+      {isEquipmentModalOpen && (
+        <EquipmentModal
+          isOpen={isEquipmentModalOpen}
+          onClose={() => {
+            setIsEquipmentModalOpen(false);
+          }}
+          onSave={handleEquipmentSave}
+        />
+      )}
+    </>
+  );
+}
+
+// 인력 추가 모달 컴포넌트
+function PersonnelModal({ isOpen, onClose, onSave }) {
+  const [formData, setFormData] = useState({
+    type: '강의',
+    position: '',
+    name: '',
+    birthDate: '',
+    school: '',
+    degree: '',
+    specialty: '',
+    joinDate: '',
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // 에러 제거
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.type) newErrors.type = '구분을 선택해주세요';
+    if (!formData.position?.trim()) newErrors.position = '직위를 입력해주세요';
+    if (!formData.name?.trim()) newErrors.name = '이름을 입력해주세요';
+    if (!formData.birthDate?.trim()) newErrors.birthDate = '생년월일을 입력해주세요';
+    if (!formData.school?.trim()) newErrors.school = '최종학교를 입력해주세요';
+    if (!formData.degree?.trim()) newErrors.degree = '학위를 입력해주세요';
+    if (!formData.specialty?.trim()) newErrors.specialty = '전문분야를 입력해주세요';
+    if (!formData.joinDate?.trim()) newErrors.joinDate = '입사일자를 입력해주세요';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (validateForm()) {
+      onSave(formData);
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">인력 추가</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 구분 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  구분 <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={e => handleInputChange('type', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.type ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="강의">강의</option>
+                  <option value="전담">전담</option>
+                </select>
+                {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type}</p>}
+              </div>
+
+              {/* 직위 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  직위 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.position}
+                  onChange={e => handleInputChange('position', e.target.value)}
+                  placeholder="직위를 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.position ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.position && <p className="mt-1 text-sm text-red-600">{errors.position}</p>}
+              </div>
+
+              {/* 이름 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  이름 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder="이름을 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              </div>
+
+              {/* 생년월일 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  생년월일 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.birthDate}
+                  onChange={e => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    handleInputChange('birthDate', value);
+                  }}
+                  placeholder="YYYYMMDD"
+                  maxLength={8}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.birthDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.birthDate && <p className="mt-1 text-sm text-red-600">{errors.birthDate}</p>}
+              </div>
+
+              {/* 최종학교 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  최종학교 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.school}
+                  onChange={e => handleInputChange('school', e.target.value)}
+                  placeholder="최종학교를 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.school ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.school && <p className="mt-1 text-sm text-red-600">{errors.school}</p>}
+              </div>
+
+              {/* 학위 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  학위 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.degree}
+                  onChange={e => handleInputChange('degree', e.target.value)}
+                  placeholder="학위를 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.degree ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.degree && <p className="mt-1 text-sm text-red-600">{errors.degree}</p>}
+              </div>
+
+              {/* 전문분야 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  전문분야 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.specialty}
+                  onChange={e => handleInputChange('specialty', e.target.value)}
+                  placeholder="전문분야를 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.specialty ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.specialty && <p className="mt-1 text-sm text-red-600">{errors.specialty}</p>}
+              </div>
+
+              {/* 입사일자 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  입사일자 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={formData.joinDate}
+                  onChange={e => handleInputChange('joinDate', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 modal-date-input ${
+                    errors.joinDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.joinDate && <p className="mt-1 text-sm text-red-600">{errors.joinDate}</p>}
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                취소
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                추가
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 장비 추가 모달 컴포넌트
+function EquipmentModal({ isOpen, onClose, onSave }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    purpose: '',
+    quantity: '',
+    remarks: '',
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // 에러 제거
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name?.trim()) newErrors.name = '장비명을 입력해주세요';
+    if (!formData.purpose?.trim()) newErrors.purpose = '용도를 입력해주세요';
+    if (!formData.quantity?.trim()) newErrors.quantity = '수량을 입력해주세요';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (validateForm()) {
+      onSave(formData);
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">장비 추가</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 장비명 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  장비명 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder="장비명을 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              </div>
+
+              {/* 용도 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  용도 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.purpose}
+                  onChange={e => handleInputChange('purpose', e.target.value)}
+                  placeholder="용도를 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.purpose ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.purpose && <p className="mt-1 text-sm text-red-600">{errors.purpose}</p>}
+              </div>
+
+              {/* 수량 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  수량 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.quantity}
+                  onChange={e => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    handleInputChange('quantity', value);
+                  }}
+                  onKeyPress={e => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="수량을 입력하세요"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.quantity ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                />
+                {errors.quantity && <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>}
+              </div>
+
+              {/* 비고 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">비고</label>
+                <input
+                  type="text"
+                  value={formData.remarks}
+                  onChange={e => handleInputChange('remarks', e.target.value)}
+                  placeholder="비고를 입력하세요 (선택사항)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4 border-t">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                취소
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                추가
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

@@ -1,18 +1,19 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
+import ActivityOverview from '../pages/Activity-overview';
 import Checklist from '../pages/Checklist';
-import Steps from '../pages/Steps';
-import Register from '../pages/Register';
-import PersonRegister from '../pages/Person-register';
-import PersonChecklist from '../pages/Person-checklist';
-import NotFound from '../pages/NotFound';
-import PersonLogin from '../pages/Person-login';
-import PersonSteps from '../pages/Person-steps';
+import Home from '../pages/Home';
 import IntroductionOverview from '../pages/Introduction-overview';
 import IntroductionRelevantLaw from '../pages/Introduction-relevant-law';
+import Login from '../pages/Login';
+import NotFound from '../pages/NotFound';
 import NoticeExamination from '../pages/Notice-examination';
+import PersonChecklist from '../pages/Person-checklist';
+import PersonLogin from '../pages/Person-login';
+import PersonRegister from '../pages/Person-register';
+import PersonSteps from '../pages/Person-steps';
+import Register from '../pages/Register';
+import Steps from '../pages/Steps';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: 'introduction-overview', element: <IntroductionOverview /> },
       { path: 'introduction-relevant-law', element: <IntroductionRelevantLaw /> },
       { path: 'notice-examination', element: <NoticeExamination /> },
+      { path: 'activity-overview', element: <ActivityOverview /> },
       { path: '*', element: <NotFound /> },
     ],
   },
