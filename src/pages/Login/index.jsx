@@ -5,13 +5,51 @@ export default function Login() {
   const [certNumber, setCertNumber] = useState('');
   const [empId, setEmpId] = useState('');
   const [empPassword, setEmpPassword] = useState('');
+  const [certNumberError, setCertNumberError] = useState('');
   const navigate = useNavigate();
 
+  const handleCertNumberChange = e => {
+    // 숫자만 추출
+    const numbers = e.target.value.replace(/[^0-9]/g, '');
+
+    // 10자리 숫자로 제한
+    const limitedNumbers = numbers.slice(0, 10);
+
+    // 하이픈 자동 추가 (000-00-00000 형식)
+    let formattedValue = limitedNumbers;
+    if (limitedNumbers.length >= 3) {
+      if (limitedNumbers.length >= 5) {
+        formattedValue = `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3, 5)}-${limitedNumbers.slice(5)}`;
+      } else {
+        formattedValue = `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3)}`;
+      }
+    }
+
+    setCertNumber(formattedValue);
+
+    // 에러 메시지 초기화
+    if (certNumberError) {
+      setCertNumberError('');
+    }
+  };
+
   const handleCertLogin = () => {
+    // 숫자만 추출하여 10자리인지 확인
+    const numbers = certNumber.replace(/[^0-9]/g, '');
+
     if (!certNumber.trim()) {
-      alert('본사 사업자 번호를 입력해주세요.');
+      setCertNumberError('본사 사업자 번호를 입력해주세요.');
       return;
     }
+
+    if (numbers.length !== 10) {
+      setCertNumberError('사업자 번호는 10자리를 모두 입력해주세요.');
+      return;
+    }
+
+    // 에러 메시지 초기화
+    setCertNumberError('');
+
     // 공동인증서 로그인 처리 로직
     window.scrollTo({ top: 0, behavior: 'smooth' });
     navigate('/steps');
@@ -119,11 +157,24 @@ export default function Login() {
             <div className="space-y-4">
               <input
                 type="text"
-                placeholder="본사 사업자 번호"
+                placeholder="본사 사업자 번호 (000-00-00000)"
                 value={certNumber}
-                onChange={e => setCertNumber(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={handleCertNumberChange}
+                onKeyPress={e => {
+                  // 숫자가 아닌 키는 입력 차단
+                  if (
+                    !/[0-9]/.test(e.key) &&
+                    !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+                maxLength={12}
+                className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  certNumberError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                }`}
               />
+              {certNumberError && <p className="text-sm text-red-600 mt-1">{certNumberError}</p>}
               <div className="flex gap-2">
                 <button className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
                   인증서 안내/신청

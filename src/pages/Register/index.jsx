@@ -62,7 +62,7 @@ const formSections = [
   },
   {
     id: 'file',
-    title: '파일 첨부',
+    title: '첨부 파일',
     icon: '📎',
     description: '필요한 서류를 첨부해주세요',
   },
@@ -139,6 +139,8 @@ const FormField = ({
   formData = null,
   errors = null,
   handleInputChange = null,
+  maxLength = null,
+  onKeyPress = null,
 }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -319,6 +321,8 @@ const FormField = ({
         className={getInputStyles(error, value)}
         placeholder={placeholder}
         {...(type === 'number' && { min: '1800', max: '2024' })}
+        {...(maxLength && { maxLength })}
+        {...(onKeyPress && { onKeyPress })}
       />
     )}
     {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
@@ -499,7 +503,6 @@ const industryFieldOptions = [
 export default function Register() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [isOverviewGuideOpen, setIsOverviewGuideOpen] = useState(false);
   const [isPersonnelModalOpen, setIsPersonnelModalOpen] = useState(false);
   const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -527,7 +530,7 @@ export default function Register() {
       trainingOrganization: null,
       trainingFloorPlan: null,
     },
-    // 파일 첨부
+    // 첨부 파일
     smeConfirmation: null,
     corporateRegistration: null,
     buildingRegistration: null,
@@ -628,6 +631,15 @@ export default function Register() {
           } else {
             formattedValue = limitedNumbers;
           }
+        }
+
+        // 전화번호 자동 포맷팅
+        if (name === 'phone') {
+          // 숫자만 추출
+          const numbers = value.replace(/[^0-9]/g, '');
+
+          // 11자리 숫자로 제한
+          formattedValue = numbers.slice(0, 11);
         }
 
         // 팩스 번호 자동 포맷팅
@@ -929,7 +941,17 @@ export default function Register() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       error={errors.phone}
-                      placeholder="02-1234-5678"
+                      placeholder="전화번호를 입력해주세요 (숫자만)"
+                      maxLength={11}
+                      onKeyPress={e => {
+                        // 숫자가 아닌 키는 입력 차단
+                        if (
+                          !/[0-9]/.test(e.key) &&
+                          !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       required
                     />
                     <FormField
@@ -1672,7 +1694,7 @@ export default function Register() {
                 </div>
               )}
 
-              {/* Step 2: 파일 첨부 */}
+              {/* Step 2: 첨부 파일 */}
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -1691,7 +1713,7 @@ export default function Register() {
                         />
                       </svg>
                       <div>
-                        <h4 className="text-sm font-medium text-blue-800 mb-1">파일 첨부 안내</h4>
+                        <h4 className="text-sm font-medium text-blue-800 mb-1">첨부 파일 안내</h4>
                         <p className="text-sm text-blue-700">
                           기업인재개발기관 등록을 위해 필요한 서류를 첨부해주세요. 파일은 PDF, DOC, DOCX, JPG, PNG
                           형식을 지원합니다. <br />
