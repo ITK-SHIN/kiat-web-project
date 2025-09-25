@@ -5,13 +5,19 @@ import { useNavigate } from 'react-router-dom';
 const formSections = [
   {
     id: 'applicant',
-    title: '신청인 정보',
+    title: '전문양성인 등록 신청서',
     icon: '👤',
     description: '신청인 기본 정보를 입력해주세요',
   },
   {
+    id: 'activity',
+    title: '전문양성인 활동계획서',
+    icon: '📋',
+    description: '활동 목표 및 계획을 입력해주세요',
+  },
+  {
     id: 'file',
-    title: '파일 첨부',
+    title: '첨부 파일',
     icon: '📁',
     description: '필요한 서류를 첨부해주세요',
   },
@@ -34,7 +40,7 @@ const getStepStyles = (index, currentStep) => {
 };
 
 const getStepTitleStyles = (index, currentStep) => {
-  const baseClasses = 'font-medium';
+  const baseClasses = 'font-bold';
 
   if (index === currentStep) {
     return cn(baseClasses, 'text-purple-700');
@@ -268,7 +274,7 @@ const ProgressSteps = ({ currentStep, sections }) => {
         ></div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col space-y-4">
         {sections.map((section, index) => (
           <div key={section.id} className={getStepStyles(index, currentStep)}>
             <div className="flex items-center space-x-3 mb-2">
@@ -357,9 +363,12 @@ const validationRules = {
     expertiseFieldOther: { required: false, message: '기타 전문 분야를 입력해주세요' },
     qualificationStatus: { required: true, message: '국가기술자격 취득여부를 선택해주세요' },
   },
+  activity: {
+    goalSetting: { required: true, message: '목표 설정을 입력해주세요' },
+    currentCapabilityAnalysis: { required: true, message: '현재 역량 및 부족한 점 분석을 입력해주세요' },
+    detailedExecutionPlan: { required: true, message: '세부 실행 계획을 입력해주세요' },
+  },
   file: {
-    applicationForm: { required: true, message: '전문양성인 등록 신청서를 첨부해주세요' },
-    activityPlan: { required: true, message: '전문양성인 활동계획서를 첨부해주세요' },
     careerCertificate: { required: true, message: '경력증명서를 첨부해주세요' },
     residentRegistration: { required: true, message: '주민등록등본을 첨부해주세요' },
     privacyConsent: { required: true, message: '개인정보 제공활용동의서를 첨부해주세요' },
@@ -400,9 +409,12 @@ export default function PersonRegister() {
     expertiseFieldOther: '',
     qualificationStatus: '', // 기술사, 기능장, 해당없음
 
-    // 파일 첨부
-    applicationForm: null,
-    activityPlan: null,
+    // 활동계획서
+    goalSetting: '',
+    currentCapabilityAnalysis: '',
+    detailedExecutionPlan: '',
+
+    // 첨부 파일
     careerCertificate: null,
     residentRegistration: null,
     privacyConsent: null,
@@ -521,7 +533,7 @@ export default function PersonRegister() {
   const validateStep = useCallback(
     step => {
       const newErrors = {};
-      const stepKey = ['applicant', 'file'][step];
+      const stepKey = ['applicant', 'activity', 'file'][step];
       const rules = validationRules[stepKey];
 
       Object.entries(rules).forEach(([field, rule]) => {
@@ -706,8 +718,49 @@ export default function PersonRegister() {
                 />
               </div>
             )}
-            {/* 경력증명서 포함내용 */}
+            {/* Step 1: 전문양성인 활동계획서 */}
             {currentStep === 1 && (
+              <div className="space-y-6">
+                <FormField
+                  label="목표 설정"
+                  name="goalSetting"
+                  type="textarea"
+                  value={formData.goalSetting}
+                  onChange={handleInputChange}
+                  error={errors.goalSetting}
+                  placeholder="전문양성인으로서 달성하고자 하는 목표를 구체적으로 작성해주세요"
+                  rows={8}
+                  required
+                />
+
+                <FormField
+                  label="현재 역량 및 부족한 점 분석"
+                  name="currentCapabilityAnalysis"
+                  type="textarea"
+                  value={formData.currentCapabilityAnalysis}
+                  onChange={handleInputChange}
+                  error={errors.currentCapabilityAnalysis}
+                  placeholder="현재 보유한 역량과 부족한 점을 분석하여 작성해주세요"
+                  rows={8}
+                  required
+                />
+
+                <FormField
+                  label="세부 실행 계획"
+                  name="detailedExecutionPlan"
+                  type="textarea"
+                  value={formData.detailedExecutionPlan}
+                  onChange={handleInputChange}
+                  error={errors.detailedExecutionPlan}
+                  placeholder="목표 달성을 위한 구체적인 실행 계획을 작성해주세요"
+                  rows={8}
+                  required
+                />
+              </div>
+            )}
+
+            {/* Step 2: 첨부 파일 */}
+            {currentStep === 2 && (
               <div className="space-y-6">
                 {/* 파일첨부안내 */}
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -721,7 +774,7 @@ export default function PersonRegister() {
                       />
                     </svg>
                     <div>
-                      <h4 className="text-sm font-medium text-blue-800 mb-1">파일 첨부 안내</h4>
+                      <h4 className="text-sm font-medium text-blue-800 mb-1">첨부 파일 안내</h4>
                       <p className="text-sm text-blue-700">
                         전문양성인 등록을 위해 필요한 서류를 첨부해주세요. 파일은 PDF, DOC, DOCX, JPG, PNG 형식을
                         지원합니다. (최대 10MB)
@@ -764,26 +817,6 @@ export default function PersonRegister() {
                   )}
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    label="전문양성인 등록 신청서"
-                    name="applicationForm"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.applicationForm}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
-                  <FormField
-                    label="전문양성인 활동계획서"
-                    name="activityPlan"
-                    type="file"
-                    onChange={handleInputChange}
-                    error={errors.activityPlan}
-                    accept=".pdf,.doc,.docx"
-                    required
-                  />
-
                   <FormField
                     label="경력증명서"
                     name="careerCertificate"
@@ -831,8 +864,6 @@ export default function PersonRegister() {
                   <div className="space-y-2">
                     {Object.entries(formData).map(([key, file]) => {
                       if (
-                        key.startsWith('applicationForm') ||
-                        key.startsWith('activityPlan') ||
                         key.startsWith('careerCertificate') ||
                         key.startsWith('residentRegistration') ||
                         key.startsWith('privacyConsent') ||
@@ -840,8 +871,6 @@ export default function PersonRegister() {
                       ) {
                         if (file) {
                           const fieldLabels = {
-                            applicationForm: '전문양성인 등록 신청서',
-                            activityPlan: '전문양성인 활동계획서',
                             careerCertificate: '경력증명서',
                             residentRegistration: '주민등록등본',
                             privacyConsent: '개인정보 제공활용동의서',

@@ -100,7 +100,7 @@ export default function PersonLogin() {
             </div>
 
             <div className="space-y-4 mb-8 mt-20">
-              {/* KIAT통합 계정으로 시작하기 */}
+              {/* 사용자 아이디로 시작하기 */}
               <button
                 className="w-full py-4 bg-blue-600 text-white text-lg font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-start gap-3"
                 onClick={() => handleSNSLogin('KIAT통합')}
@@ -108,7 +108,7 @@ export default function PersonLogin() {
                 <svg className="w-6 h-6 ml-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
-                <span>KIAT통합 계정으로 시작하기</span>
+                <span>사용자 아이디로 시작하기</span>
               </button>
 
               {/* 카카오 계정으로 시작하기 */}
@@ -145,7 +145,6 @@ export default function PersonLogin() {
             <div className="mt-8 pt-6 border-t border-gray-200">
               <h3 className="font-medium text-gray-900 mb-3">문의처 정보</h3>
               <div className="text-sm text-gray-600 space-y-1 text-left">
-                <p>• KIAT 통합계정 문의 : 02)2126-4519</p>
                 <p>
                   • 카카오, 네이버 계정 문의 :{' '}
                   <Link to="#" className="text-blue-600 hover:underline">
