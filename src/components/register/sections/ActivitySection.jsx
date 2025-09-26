@@ -374,16 +374,9 @@ const ActivitySection = ({ formData, errors, setFormData, setIsPersonnelModalOpe
                       <td className="border border-gray-300 px-3 py-4">
                         <input
                           type="number"
-                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all relative z-10 pointer-events-auto"
+                          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed transition-all relative z-10 pointer-events-none"
                           value={item.order}
-                          onChange={e => {
-                            setFormData(prev => ({
-                              ...prev,
-                              equipment: prev.equipment.map(eq =>
-                                eq.id === item.id ? { ...eq, order: parseInt(e.target.value) } : eq
-                              ),
-                            }));
-                          }}
+                          readOnly
                           min="1"
                         />
                       </td>
