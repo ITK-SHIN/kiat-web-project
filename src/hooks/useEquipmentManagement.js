@@ -35,10 +35,21 @@ const useEquipmentManagement = (formData, setFormData) => {
   // 장비 삭제
   const removeEquipment = useCallback(
     equipmentId => {
-      setFormData(prev => ({
-        ...prev,
-        equipment: prev.equipment.filter(equipment => equipment.id !== equipmentId),
-      }));
+      setFormData(prev => {
+        // 해당 장비를 삭제
+        const filteredEquipment = prev.equipment.filter(equipment => equipment.id !== equipmentId);
+        
+        // 삭제 후 순번을 1부터 연속되도록 재정렬
+        const reorderedEquipment = filteredEquipment.map((equipment, index) => ({
+          ...equipment,
+          order: index + 1,
+        }));
+        
+        return {
+          ...prev,
+          equipment: reorderedEquipment,
+        };
+      });
     },
     [setFormData]
   );

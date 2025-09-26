@@ -454,10 +454,21 @@ const ActivitySection = ({ formData, errors, setFormData, setIsPersonnelModalOpe
                         <button
                           type="button"
                           onClick={() => {
-                            setFormData(prev => ({
-                              ...prev,
-                              equipment: prev.equipment.filter(eq => eq.id !== item.id),
-                            }));
+                            setFormData(prev => {
+                              // 해당 장비를 삭제
+                              const filteredEquipment = prev.equipment.filter(eq => eq.id !== item.id);
+                              
+                              // 삭제 후 순번을 1부터 연속되도록 재정렬
+                              const reorderedEquipment = filteredEquipment.map((equipment, index) => ({
+                                ...equipment,
+                                order: index + 1,
+                              }));
+                              
+                              return {
+                                ...prev,
+                                equipment: reorderedEquipment,
+                              };
+                            });
                           }}
                           className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
                         >
