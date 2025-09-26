@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // 인력 추가 모달 컴포넌트
 function PersonnelModal({ isOpen, onClose, onSave }) {
@@ -14,6 +14,7 @@ function PersonnelModal({ isOpen, onClose, onSave }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -47,15 +48,32 @@ function PersonnelModal({ isOpen, onClose, onSave }) {
     }
   };
 
+  // 애니메이션 효과를 위한 useEffect
+  useEffect(() => {
+    if (isOpen) {
+      // 모달이 열릴 때 약간의 지연 후 애니메이션 시작
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 10);
+      return () => clearTimeout(timer);
+    } else {
+      setIsVisible(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className={`fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4 transition-opacity duration-300 ${
+      isVisible ? 'opacity-100' : 'opacity-0'
+    }`}>
+      <div className={`bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+        isVisible ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
+      }`}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">인력 추가</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors hover:scale-110 transform duration-200">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -209,13 +227,13 @@ function PersonnelModal({ isOpen, onClose, onSave }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:scale-105 transform"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105 transform"
               >
                 추가
               </button>
